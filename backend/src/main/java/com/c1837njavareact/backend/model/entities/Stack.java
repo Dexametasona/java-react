@@ -1,7 +1,6 @@
 package com.c1837njavareact.backend.model.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.HashSet;
