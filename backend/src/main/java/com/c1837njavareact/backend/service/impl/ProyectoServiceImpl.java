@@ -34,7 +34,7 @@ public class ProyectoServiceImpl implements ProyectoService {
       Stack stack = stackRepo.findById(id).orElseThrow(
               ()->new EntityNotFoundException("id de stack no encontrado: "+id));
       stacks.add(stack);
-    };
+    }
     newProyecto.setStacks(stacks);
     var saved = this.proyectoRepo.save(newProyecto);
     return ProyectoMapper.INSTANCE.toDto(saved);
@@ -64,7 +64,7 @@ public class ProyectoServiceImpl implements ProyectoService {
       Stack stack = stackRepo.findById(id_stack).orElseThrow(
               ()->new EntityNotFoundException("id de stack no encontrado: "+id));
       stacks.add(stack);
-    };
+    }
     newProyecto.setStacks(stacks);
     var udpatedProyecto = this.proyectoRepo.save(newProyecto);
     return ProyectoMapper.INSTANCE.toDto(udpatedProyecto);
