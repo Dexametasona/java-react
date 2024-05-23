@@ -1,7 +1,6 @@
 package com.c1837njavareact.backend.model.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,6 @@ public class Proyecto {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
-  @Size(max = 75)
   @Column(nullable = false, length = 75)
   private String name;
   @Column(nullable = false)
@@ -32,7 +30,7 @@ public class Proyecto {
   @JoinTable(
           name="proyecto_stack",
           joinColumns = @JoinColumn(name = "id_proyecto"),
-          inverseJoinColumns = @JoinColumn(name = "id_stack")
+          inverseJoinColumns = @JoinColumn(name = "id")
   )
   private Set<Stack> stacks = new HashSet<>();
 
