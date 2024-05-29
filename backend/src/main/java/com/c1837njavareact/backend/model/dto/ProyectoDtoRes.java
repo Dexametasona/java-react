@@ -1,10 +1,17 @@
 package com.c1837njavareact.backend.model.dto;
 
-import java.util.List;
+import com.c1837njavareact.backend.model.enums.Status;
+
+import java.time.LocalDateTime;
+import java.util.Set;
 
 public record ProyectoDtoRes(
         int id,
         String name,
         String description,
-        List<StackDtoRes> stacks
+        Set<StackDtoRes> stacks,
+        LocalDateTime createdAt,
+        Set<CollaboratorDtoRes> collaborators,
+        TagDtoRes tag,
+        Status status
 ) {}

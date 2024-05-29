@@ -3,6 +3,7 @@ package com.c1837njavareact.backend.service.impl;
 import com.c1837njavareact.backend.model.dto.StackDtoReq;
 import com.c1837njavareact.backend.model.dto.StackDtoRes;
 import com.c1837njavareact.backend.model.entities.Stack;
+import com.c1837njavareact.backend.model.mappers.StackMapper;
 import com.c1837njavareact.backend.model.persistence.StackRepository;
 import com.c1837njavareact.backend.service.StackService;
 import lombok.RequiredArgsConstructor;
@@ -11,18 +12,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class StackServiceImpl implements StackService {
   private final StackRepository stackRepo;
+  private final StackMapper stackMapper;
 
   @Override
   public StackDtoRes create(StackDtoReq stack) {
     Stack newStack = new Stack(stack.name());
     Stack saved = stackRepo.save(newStack);
-    return new StackDtoRes(saved.getId(), saved.getName());
+    return stackMapper.stackToDtoRes(saved);
   }
 
   @Override
@@ -31,9 +32,7 @@ public class StackServiceImpl implements StackService {
     if(stacks.isEmpty()){
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró proyectos.");
     }
-    return stacks.stream()
-            .map(stack->new StackDtoRes(stack.getId(), stack.getName()))
-            .collect(Collectors.toList());
+    return stackMapper.listStackToDtoRes(stacks);
   }
 
   @Override
@@ -42,7 +41,7 @@ public class StackServiceImpl implements StackService {
     if(stackFound.isEmpty()){
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró el proyecto con id: "+id);
     }
-    return new StackDtoRes(stackFound.get().getId(), stackFound.get().getName());
+    return stackMapper.stackToDtoRes(stackFound.get());
   }
 
   @Override

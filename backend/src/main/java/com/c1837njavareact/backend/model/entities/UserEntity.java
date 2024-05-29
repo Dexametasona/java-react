@@ -13,38 +13,41 @@ import java.util.Set;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-public class Proyecto {
+public class UserEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
-  @Column(nullable = false, length = 75)
-  private String name;
+  @Column(length = 25, nullable = false)
+  private String username;
+  @Column(length = 75, nullable = false)
+  private String email;
+  @Column(length = 16, nullable = false)
+  private String password;
   @Column(nullable = false)
-  private String description;
-  @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt;
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private Status status;
 
-
   @ManyToMany
   @JoinTable(
-          name="proyecto_stack",
-          joinColumns = @JoinColumn(name = "id_proyecto"),
-          inverseJoinColumns = @JoinColumn(name = "id")
+          name="stack_user",
+          joinColumns = @JoinColumn(name = "id_user"),
+          inverseJoinColumns = @JoinColumn(name = "id_stack")
   )
   private Set<Stack> stacks = new HashSet<>();
 
-  @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Collaborator> collaborators = new HashSet<>();
 
-  @ManyToOne
-  @JoinColumn(name = "tag_id")
-  private Tag tag;
+  public UserEntity(String username, String email, String password) {
+    this.username = username;
+    this.email = email;
+    this.password = password;
+  }
 
   @PrePersist
   protected void onCreate() {

@@ -21,6 +21,9 @@ public class Stack {
   @ManyToMany(mappedBy = "stacks")
   private Set<Proyecto> proyectos = new HashSet<>();
 
+  @ManyToMany(mappedBy = "stacks")
+  private Set<Proyecto> users = new HashSet<>();
+
   public Stack(String name){
     this.name = name;
   }
