@@ -6,14 +6,12 @@ import com.c1837njavareact.backend.model.entities.Proyecto;
 import com.c1837njavareact.backend.model.entities.Stack;
 import com.c1837njavareact.backend.model.entities.Tag;
 import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 import java.util.Set;
 
 @Mapper(componentModel = "spring", uses =  CollaboratorMapper.class)
 public interface ProyectoMapper {
-//  ProyectoMapper INSTANCE = Mappers.getMapper(ProyectoMapper.class);
 
   @Mapping(target = "stacks", source = "stacksSet")
   @Mapping(target = "tag", source = "tag")

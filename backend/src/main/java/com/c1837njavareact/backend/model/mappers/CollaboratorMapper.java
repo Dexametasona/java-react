@@ -5,11 +5,9 @@ import com.c1837njavareact.backend.model.dto.CollaboratorDtoRes;
 import com.c1837njavareact.backend.model.entities.Collaborator;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface CollaboratorMapper {
-//  CollaboratorMapper INSTANCE = Mappers.getMapper(CollaboratorMapper.class);
 
   @Mapping(source = "proyecto", target = "proyecto")
   @Mapping(source = "user", target = "user")

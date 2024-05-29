@@ -7,7 +7,6 @@ import com.c1837njavareact.backend.model.entities.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 import java.util.Set;
@@ -15,7 +14,6 @@ import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-//  UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
   @Mapping(target = "stacks", source = "stack")
   UserEntity dtoReqToUser(UserDtoReq userDtoReq, Set<Stack> stack);
