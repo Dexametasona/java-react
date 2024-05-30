@@ -2,7 +2,7 @@ spring:
   application:
     name: backend
   datasource:
-    url: jdbc:postgresql://localhost:5432/mydatabase
+    url: jdbc:postgresql://db:5432/mydatabase
     username: myuser
     password: secret
     driver-class-name: org.postgresql.Driver
@@ -11,5 +11,3 @@ spring:
       ddl-auto: update
     show-sql: true
     open-in-view: true
-    properties:
-      hibernate:
