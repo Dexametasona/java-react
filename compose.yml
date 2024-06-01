@@ -1,0 +1,19 @@
+#services:
+##  db:
+##    image: 'postgres:latest'
+##    environment:
+##      - 'POSTGRES_DB=mydatabase'
+##      - 'POSTGRES_PASSWORD=secret'
+##      - 'POSTGRES_USER=myuser'
+##    ports:
+##      - '5432'
+#  backend:
+#    build: ./backend
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://dpg-cpd61a7109ks73e4mv8g-a:5432/mydatabase
+#      - SPRING_DATASOURCE_USERNAME=myuser
+#      - SPRING_DATASOURCE_PASSWORD=JcQvXYgxqakqzprt9jGljJfhlNt0Hnsm
+##    depends_on:
+##      - db

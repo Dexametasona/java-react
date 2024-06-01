@@ -2,9 +2,9 @@ spring:
   application:
     name: backend
   datasource:
-    url: jdbc:postgresql://db:5432/mydatabase
+    url: jdbc:postgresql://dpg-cpd61a7109ks73e4mv8g-a.oregon-postgres.render.com:5432/mydatabase_wruj
     username: myuser
-    password: secret
+    password: JcQvXYgxqakqzprt9jGljJfhlNt0Hnsm
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
