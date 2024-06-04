@@ -6,7 +6,7 @@ import com.c1837njavareact.backend.model.dto.ProyectoDtoRes;
 import com.c1837njavareact.backend.model.entities.Proyecto;
 import com.c1837njavareact.backend.model.entities.Stack;
 import com.c1837njavareact.backend.model.entities.Tag;
-import com.c1837njavareact.backend.model.enums.Role;
+import com.c1837njavareact.backend.model.enums.ProyectoRole;
 import com.c1837njavareact.backend.model.enums.Status;
 import com.c1837njavareact.backend.model.mappers.CollaboratorMapper;
 import com.c1837njavareact.backend.model.mappers.ProyectoMapper;
@@ -16,10 +16,12 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -43,12 +45,12 @@ public class ProyectoServiceImpl implements ProyectoService {
 
     var newProyecto = proyectoMapper.dtoReqToProyecto(proyecto, stacks, tag);
     var proyectoSaved = this.proyectoRepo.save(newProyecto);
-    var userOwner = userRepo.findById(proyecto.owner_id()).orElseThrow(
-            ()->new EntityNotFoundException("usuario con id: "+proyecto.owner_id()+" no encontrado." ));
+    var userOwner = userRepo.findById(proyecto.ownerId()).orElseThrow(
+            ()->new EntityNotFoundException("usuario con id: "+proyecto.ownerId()+" no encontrado." ));
     var collaborator = new CollaboratorDtoReq(
             proyectoSaved,
             userOwner,
-            Role.OWNER);
+            ProyectoRole.OWNER);
     var collaboratorSaved = this.collaboratorRepo.save(collaboratorMapper.dtoReqToCollaborators(collaborator));
     proyectoSaved.setCollaborators(Set.of(collaboratorSaved));
     proyectoSaved.setStatus(Status.ON_HOLD);
@@ -63,9 +65,13 @@ public class ProyectoServiceImpl implements ProyectoService {
   }
 
   @Override
-  public List<ProyectoDtoRes> getAll() {
-    List<Proyecto> proyectos = this.proyectoRepo.findAll();
-    return proyectoMapper.listProyectoToDtoRes(proyectos);
+  public Page<ProyectoDtoRes> getAll(Pageable pageable) {
+    var proyectos = this.proyectoRepo.findAll(pageable);
+    var pacientesDto = proyectos.getContent()
+            .stream()
+            .map(proyectoMapper::proyectoToDtoRes)
+            .toList();
+    return new PageImpl<>(pacientesDto, pageable, proyectos.getTotalElements());
   }
 
   @Override

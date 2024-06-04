@@ -4,6 +4,9 @@ import com.c1837njavareact.backend.model.dto.ProyectoDtoReq;
 import com.c1837njavareact.backend.service.ProyectoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +23,12 @@ public class ProyectoController {
   }
 
   @GetMapping
-  public ResponseEntity<?> getAll(){
-    return ResponseEntity.ok(proyectoService.getAll());
+  public ResponseEntity<?> getAll(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size,
+                                  @RequestParam(defaultValue = "id") String sort,
+                                  @RequestParam(defaultValue = "asc") String direction){
+    Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
+    return ResponseEntity.ok(proyectoService.getAll(pageable));
   }
 
   @GetMapping("/{id}")

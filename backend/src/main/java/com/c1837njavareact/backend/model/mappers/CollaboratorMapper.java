@@ -11,10 +11,9 @@ public interface CollaboratorMapper {
 
   @Mapping(source = "proyecto", target = "proyecto")
   @Mapping(source = "user", target = "user")
-  @Mapping(source = "role", target = "role")
   Collaborator dtoReqToCollaborators(CollaboratorDtoReq dto);
 
-  @Mapping(target = "username", source = "user.username")
-  @Mapping(target = "user_id", source = "user.id")
+  @Mapping(target = "userName", source = "user.userName")
+  @Mapping(target = "userId", source = "user.id")
   CollaboratorDtoRes collaboratorToDtoRes(Collaborator collaborator);
 }

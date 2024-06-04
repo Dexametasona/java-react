@@ -29,9 +29,6 @@ public class StackServiceImpl implements StackService {
   @Override
   public List<StackDtoRes> getAll() {
     var stacks = this.stackRepo.findAll();
-    if(stacks.isEmpty()){
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró proyectos.");
-    }
     return stackMapper.listStackToDtoRes(stacks);
   }
 
@@ -39,7 +36,7 @@ public class StackServiceImpl implements StackService {
   public StackDtoRes getById(int id) {
     var stackFound = this.stackRepo.findById(id);
     if(stackFound.isEmpty()){
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró el proyecto con id: "+id);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró el stack con id: "+id);
     }
     return stackMapper.stackToDtoRes(stackFound.get());
   }
@@ -48,7 +45,7 @@ public class StackServiceImpl implements StackService {
   public void deleteById(int id) {
     var stackFound = this.stackRepo.findById(id);
     if(stackFound.isEmpty()){
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró el proyecto con id: "+id);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró el stack con id: "+id);
     }
     this.stackRepo.delete(stackFound.get());
   }

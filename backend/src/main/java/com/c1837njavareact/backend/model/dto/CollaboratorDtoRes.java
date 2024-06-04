@@ -1,9 +1,9 @@
 package com.c1837njavareact.backend.model.dto;
 
-import com.c1837njavareact.backend.model.enums.Role;
+import com.c1837njavareact.backend.model.enums.ProyectoRole;
 
 public record CollaboratorDtoRes(
-        int user_id,
-        String username,
-        Role role
+        int userId,
+        String userName,
+        ProyectoRole proyectoRole
 ) {}

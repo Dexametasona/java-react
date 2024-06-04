@@ -1,6 +1,6 @@
 package com.c1837njavareact.backend.model.entities;
 
-import com.c1837njavareact.backend.model.enums.Role;
+import com.c1837njavareact.backend.model.enums.ProyectoRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,10 +22,10 @@ public class Collaborator {
   private Proyecto proyecto;
 
   @ManyToOne
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "userId")
   private UserEntity user;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  private Role role;
+  private ProyectoRole proyectoRole;
 }

@@ -21,18 +21,6 @@ public class UserServiceImpl implements UserService {
   private final StackRepository stackRepo;
   private final UserMapper userMapper;
 
-  @Override
-  public UserDtoRes create(UserDtoReq user) {
-    var stacks = new HashSet<>(stackRepo.findAllById(user.stacks()));
-    UserEntity newUser = userMapper.dtoReqToUser(user, stacks);
-    return userMapper.userToDtoRes(this.userRepo.save(newUser));
-  }
-
-  @Override
-  public List<UserDtoRes> getAll() {
-    var users = this.userRepo.findAll();
-    return userMapper.listUserToDto(users);
-  }
 
   @Override
   public UserDtoRes getById(int id) {
@@ -54,6 +42,8 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void deleteById(int id) {
-
+    if(this.userRepo.existsById(id)){
+      this.userRepo.deleteById(id);
+    }
   }
 }

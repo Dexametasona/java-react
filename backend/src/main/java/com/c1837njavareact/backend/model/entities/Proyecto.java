@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -45,6 +46,9 @@ public class Proyecto {
   @ManyToOne
   @JoinColumn(name = "tag_id")
   private Tag tag;
+
+  @OneToMany(mappedBy = "proyectoTarget", orphanRemoval = true)
+  private List<JoinRequest> joinRequests;
 
   @PrePersist
   protected void onCreate() {

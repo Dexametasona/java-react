@@ -1,14 +1,19 @@
 package com.c1837njavareact.backend.model.entities;
 
-import com.c1837njavareact.backend.model.enums.Status;
+import com.c1837njavareact.backend.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -16,21 +21,22 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class UserEntity {
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
+public class UserEntity implements UserDetails {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
   @Column(length = 25, nullable = false)
-  private String username;
+  private String userName;
   @Column(length = 75, nullable = false)
   private String email;
-  @Column(length = 16, nullable = false)
+  @Column(nullable = false)
   private String password;
   @Column(nullable = false)
   private LocalDateTime createdAt;
+
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  private Status status;
+  private Role role;
 
   @ManyToMany
   @JoinTable(
@@ -43,15 +49,42 @@ public class UserEntity {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Collaborator> collaborators = new HashSet<>();
 
-  public UserEntity(String username, String email, String password) {
-    this.username = username;
-    this.email = email;
-    this.password = password;
-  }
-
   @PrePersist
   protected void onCreate() {
     this.createdAt = LocalDateTime.now();
-    this.status = Status.ON_HOLD;
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return List.of(new SimpleGrantedAuthority(role.name()));
+  }
+
+  @Override
+  public String getUsername() {
+    return this.email;
+  }
+
+  public String getUserName() {
+    return this.userName;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
   }
 }
