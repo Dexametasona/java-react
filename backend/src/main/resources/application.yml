@@ -16,8 +16,3 @@ jwt:
   expirationTime: 1440000
 api:
   base-path: api/v1
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
