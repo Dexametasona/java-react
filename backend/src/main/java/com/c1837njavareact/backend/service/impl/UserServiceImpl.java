@@ -30,6 +30,12 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public List<UserDtoRes> getAll() {
+    var users = this.userRepo.findAll();
+    return users.stream().map(userMapper::userToDtoRes).toList();
+  }
+
+  @Override
   public UserDtoRes updateById(UserDtoReq user, int id) {
     var userFounded = this.userRepo.findById(id).orElseThrow(
             () -> new EntityNotFoundException("usuario no encontrado, id:" + id));

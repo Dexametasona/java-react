@@ -3,6 +3,7 @@ package com.c1837njavareact.backend.service.impl;
 import com.c1837njavareact.backend.model.dto.CollaboratorDtoReq;
 import com.c1837njavareact.backend.model.dto.ProyectoDtoReq;
 import com.c1837njavareact.backend.model.dto.ProyectoDtoRes;
+import com.c1837njavareact.backend.model.entities.Collaborator;
 import com.c1837njavareact.backend.model.entities.Proyecto;
 import com.c1837njavareact.backend.model.entities.Stack;
 import com.c1837njavareact.backend.model.entities.Tag;
@@ -16,9 +17,11 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.Context;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -39,21 +42,9 @@ public class ProyectoServiceImpl implements ProyectoService {
   @Override
   @Transactional
   public ProyectoDtoRes create(ProyectoDtoReq proyecto) {
-    Set<Stack> stacks = new HashSet<>(this.stackRepo.findAllById(proyecto.stacks()));
-    Tag tag = this.tagRepo.findById(proyecto.tagId()).orElseThrow(
-            ()-> new EntityNotFoundException("tag_id no encontrado."));
-
-    var newProyecto = proyectoMapper.dtoReqToProyecto(proyecto, stacks, tag);
+    var newProyecto = proyectoMapper.dtoReqToProyecto(proyecto,stackRepo,tagRepo);
+    newProyecto.setCollaborators(this.generateOwner(newProyecto));
     var proyectoSaved = this.proyectoRepo.save(newProyecto);
-    var userOwner = userRepo.findById(proyecto.ownerId()).orElseThrow(
-            ()->new EntityNotFoundException("usuario con id: "+proyecto.ownerId()+" no encontrado." ));
-    var collaborator = new CollaboratorDtoReq(
-            proyectoSaved,
-            userOwner,
-            ProyectoRole.OWNER);
-    var collaboratorSaved = this.collaboratorRepo.save(collaboratorMapper.dtoReqToCollaborators(collaborator));
-    proyectoSaved.setCollaborators(Set.of(collaboratorSaved));
-    proyectoSaved.setStatus(Status.ON_HOLD);
     return proyectoMapper.proyectoToDtoRes(proyectoSaved);
   }
 
@@ -86,5 +77,15 @@ public class ProyectoServiceImpl implements ProyectoService {
     }else {
      throw new EntityNotFoundException("Proyecto no encontrado id "+ id);
     }
+  }
+  private Set<Collaborator> generateOwner(Proyecto proyecto){
+    var ownerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+    var user = userRepo.findByEmail(ownerEmail).orElseThrow(
+            ()->new EntityNotFoundException("Usuario no encontrado, email: "+ownerEmail));
+    var owner = new Collaborator();
+    owner.setUser(user);
+    owner.setProyecto(proyecto);
+    owner.setProyectoRole(ProyectoRole.OWNER);
+    return Set.of(owner);
   }
 }

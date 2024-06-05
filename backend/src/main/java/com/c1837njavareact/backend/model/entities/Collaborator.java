@@ -18,11 +18,11 @@ public class Collaborator {
   private int id;
 
   @ManyToOne
-  @JoinColumn(name = "proyecto_id")
+  @JoinColumn(name = "proyecto_id", nullable = false)
   private Proyecto proyecto;
 
   @ManyToOne
-  @JoinColumn(name = "userId")
+  @JoinColumn(name = "userId", nullable = false)
   private UserEntity user;
 
   @Enumerated(EnumType.STRING)

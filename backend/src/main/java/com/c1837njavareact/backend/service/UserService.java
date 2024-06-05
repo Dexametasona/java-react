@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface UserService {
   UserDtoRes getById(int id);
+  List<UserDtoRes> getAll();
   UserDtoRes updateById(UserDtoReq user, int id);
   void deleteById(int id);
 }

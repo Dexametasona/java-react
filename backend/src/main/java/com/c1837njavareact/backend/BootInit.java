@@ -1,7 +1,12 @@
 package com.c1837njavareact.backend;
 
 import com.c1837njavareact.backend.model.dto.StackDtoReq;
+import com.c1837njavareact.backend.model.dto.TagDtoReq;
+import com.c1837njavareact.backend.model.dto.UserDtoReq;
+import com.c1837njavareact.backend.model.persistence.UserRepository;
+import com.c1837njavareact.backend.service.AuthService;
 import com.c1837njavareact.backend.service.StackService;
+import com.c1837njavareact.backend.service.TagService;
 import com.c1837njavareact.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +22,17 @@ import java.util.List;
 public class BootInit implements ApplicationRunner {
   private final StackService stackService;
   private final UserService userService;
+  private final TagService tagService;
+  private final AuthService authService;
 
   @Override
   public void run(ApplicationArguments args) throws Exception {
     this.createStacks();
+    this.createTags();
+//    this.createUser();
   }
 
-  private void createStacks(){
+  private void createStacks() {
     var stacks = this.stackService.getAll();
     if (stacks.isEmpty()) {
       var newStacks = List.of(
@@ -48,9 +57,62 @@ public class BootInit implements ApplicationRunner {
               new StackDtoReq("Node.js"),
               new StackDtoReq("Laravel"));
       log.info("----------------------------creando stacks---------------------------");
-      for(var stack : newStacks){
+      for (var stack : newStacks) {
         this.stackService.create(stack);
       }
     }
   }
+
+  private void createTags() {
+    var tags = this.tagService.getAll();
+    if (tags.isEmpty()) {
+      List<TagDtoReq> newTags = List.of(
+              new TagDtoReq("Desarrollo web"),
+              new TagDtoReq("Desarrollo móvil"),
+              new TagDtoReq("Desarrollo de software"),
+              new TagDtoReq("DevOps"),
+              new TagDtoReq("Big Data"),
+              new TagDtoReq("Inteligencia artificial"),
+              new TagDtoReq("Seguridad informática"),
+              new TagDtoReq("Arquitectura de software"),
+              new TagDtoReq("Gestión de proyectos"),
+              new TagDtoReq("UI/UX Design"));
+      log.info("----------------------insertado tags------------------------");
+      newTags.forEach(this.tagService::create);
+    }
+  }
+
+//  private void createUser() {
+//    var users = this.userService.getAll();
+//    if (users.isEmpty()) {
+//      var newUsers = List.of(
+//              new UserDtoReq(
+//                      "juan_perez",
+//                      "juan.perez@correo.com",
+//                      "pruebaA1_",
+//                      List.of(1, 2)
+//              ),
+//              new UserDtoReq(
+//                      "maria_garcia",
+//                      "maria.garcia@empresa.com",
+//                      "M1superClave",
+//                      List.of(3, 4, 5)
+//              ),
+//              new UserDtoReq(
+//                      "pedro_lopez",
+//                      "pedro.lopez@gmail.com",
+//                      "P4ssw0rd!",
+//                      List.of(1, 6)
+//              ),
+//              new UserDtoReq(
+//                      "ana_sanchez",
+//                      "ana.sanchez@universidad.edu",
+//                      "An4l1t1c4",
+//                      List.of(7, 8)
+//              )
+//      );
+//      log.info("-----------------------insertando usuarios---------------");
+//      newUsers.forEach(this.authService::register);
+//    }
+//  }
 }

@@ -9,6 +9,5 @@ public record ProyectoDtoReq(
         String name,
         String description,
         @Size(min = 1) List<Integer> stacks,
-        @NotNull int tagId,
-        @NotNull int ownerId
+        @NotNull int tagId
 ){}

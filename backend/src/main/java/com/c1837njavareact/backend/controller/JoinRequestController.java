@@ -30,4 +30,14 @@ public class JoinRequestController {
   public ResponseEntity<?> getAllToUserId(@PathVariable int id){
     return ResponseEntity.status(HttpStatus.FOUND).body(this.joinService.getJoinRequestByProyecto(id));
   }
+  @GetMapping("/accept/{id}")
+  public ResponseEntity<String> acceptRequest(@PathVariable int id){
+    this.joinService.acceptRequest(id);
+    return ResponseEntity.ok("Solicitud aceptada");
+  }
+  @GetMapping("/reject/{id}")
+  public ResponseEntity<String> rejectRequest(@PathVariable int id){
+    this.joinService.rejectRequest(id);
+    return ResponseEntity.ok("Solicitud denegada.");
+  }
 }
