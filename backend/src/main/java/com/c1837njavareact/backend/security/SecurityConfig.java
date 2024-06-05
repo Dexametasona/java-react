@@ -39,6 +39,9 @@ public class SecurityConfig {
     });
     http.authorizeHttpRequests(auth->auth
             .requestMatchers(HttpMethod.POST,"api/v1/auth/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "api/v1/proyecto").permitAll()
+            .requestMatchers(HttpMethod.GET, "api/v1/stack").permitAll()
+            .requestMatchers(HttpMethod.GET, "api/v1/tag").permitAll()
             .anyRequest().authenticated())
             .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)
