@@ -2,8 +2,6 @@ package com.c1837njavareact.backend;
 
 import com.c1837njavareact.backend.model.dto.StackDtoReq;
 import com.c1837njavareact.backend.model.dto.TagDtoReq;
-import com.c1837njavareact.backend.model.dto.UserDtoReq;
-import com.c1837njavareact.backend.model.persistence.UserRepository;
 import com.c1837njavareact.backend.service.AuthService;
 import com.c1837njavareact.backend.service.StackService;
 import com.c1837njavareact.backend.service.TagService;

@@ -2,7 +2,6 @@ package com.c1837njavareact.backend.service.impl;
 
 import com.c1837njavareact.backend.model.dto.JoinRequestDtoReq;
 import com.c1837njavareact.backend.model.dto.JoinRequestDtoRes;
-import com.c1837njavareact.backend.model.entities.Collaborator;
 import com.c1837njavareact.backend.model.entities.JoinRequest;
 import com.c1837njavareact.backend.model.entities.Proyecto;
 import com.c1837njavareact.backend.model.entities.UserEntity;
@@ -81,8 +80,6 @@ public class JoinServiceImpl implements JoinService {
   public void rejectRequest(int idRequest) {
     var joinRequest = this.joinRepo.findById(idRequest);
     if (joinRequest.isPresent()) {
-      var newCollaborator = this.collaboratorMapper.joinRequestToCollaborator(
-              joinRequest.get(), userRepo, proyectoRepo);
       if (verifyUserInTokenMatchRequest(joinRequest.get())) {
         this.deleteById(idRequest);
         return;

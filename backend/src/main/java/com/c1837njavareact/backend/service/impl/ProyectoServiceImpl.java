@@ -1,14 +1,10 @@
 package com.c1837njavareact.backend.service.impl;
 
-import com.c1837njavareact.backend.model.dto.CollaboratorDtoReq;
 import com.c1837njavareact.backend.model.dto.ProyectoDtoReq;
 import com.c1837njavareact.backend.model.dto.ProyectoDtoRes;
 import com.c1837njavareact.backend.model.entities.Collaborator;
 import com.c1837njavareact.backend.model.entities.Proyecto;
-import com.c1837njavareact.backend.model.entities.Stack;
-import com.c1837njavareact.backend.model.entities.Tag;
 import com.c1837njavareact.backend.model.enums.ProyectoRole;
-import com.c1837njavareact.backend.model.enums.Status;
 import com.c1837njavareact.backend.model.mappers.CollaboratorMapper;
 import com.c1837njavareact.backend.model.mappers.ProyectoMapper;
 import com.c1837njavareact.backend.model.persistence.*;

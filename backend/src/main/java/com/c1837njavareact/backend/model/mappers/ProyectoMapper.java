@@ -2,17 +2,13 @@ package com.c1837njavareact.backend.model.mappers;
 
 import com.c1837njavareact.backend.model.dto.ProyectoDtoReq;
 import com.c1837njavareact.backend.model.dto.ProyectoDtoRes;
-import com.c1837njavareact.backend.model.entities.Collaborator;
 import com.c1837njavareact.backend.model.entities.Proyecto;
 import com.c1837njavareact.backend.model.entities.Stack;
 import com.c1837njavareact.backend.model.entities.Tag;
-import com.c1837njavareact.backend.model.enums.ProyectoRole;
 import com.c1837njavareact.backend.model.persistence.StackRepository;
 import com.c1837njavareact.backend.model.persistence.TagRepository;
-import com.c1837njavareact.backend.model.persistence.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.mapstruct.*;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.HashSet;
 import java.util.List;
