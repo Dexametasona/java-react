@@ -10,8 +10,9 @@ public record ProyectoDtoRes(
         String name,
         String description,
         Set<StackDtoRes> stacks,
-        LocalDateTime createdAt,
-        Set<CollaboratorDtoRes> collaborators,
+        String owner,
         TagDtoRes tag,
-        Status status
+        Status status,
+        int requests,
+        int rating
 ) {}

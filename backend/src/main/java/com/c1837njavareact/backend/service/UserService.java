@@ -3,11 +3,11 @@ package com.c1837njavareact.backend.service;
 import com.c1837njavareact.backend.model.dto.UserDtoReq;
 import com.c1837njavareact.backend.model.dto.UserDtoRes;
 
-import java.util.List;
+import java.util.Set;
 
 public interface UserService {
   UserDtoRes getById(int id);
-  List<UserDtoRes> getAll();
+  Set<UserDtoRes> getAll();
   UserDtoRes updateById(UserDtoReq user, int id);
   void deleteById(int id);
 }

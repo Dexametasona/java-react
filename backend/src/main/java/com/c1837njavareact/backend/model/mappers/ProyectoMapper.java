@@ -1,10 +1,10 @@
 package com.c1837njavareact.backend.model.mappers;
 
+import com.c1837njavareact.backend.model.dto.ProyectoDetailedDto;
 import com.c1837njavareact.backend.model.dto.ProyectoDtoReq;
 import com.c1837njavareact.backend.model.dto.ProyectoDtoRes;
-import com.c1837njavareact.backend.model.entities.Proyecto;
-import com.c1837njavareact.backend.model.entities.Stack;
-import com.c1837njavareact.backend.model.entities.Tag;
+import com.c1837njavareact.backend.model.entities.*;
+import com.c1837njavareact.backend.model.enums.ProyectoRole;
 import com.c1837njavareact.backend.model.persistence.StackRepository;
 import com.c1837njavareact.backend.model.persistence.TagRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,7 +14,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(componentModel = "spring", uses =  CollaboratorMapper.class)
+@Mapper(componentModel = "spring", uses = {CollaboratorMapper.class,
+        StackMapper.class,
+        JoinMapper.class,
+        PositionMapper.class
+})
 public interface ProyectoMapper {
 
   @Mapping(target = "stacks", source = "stacks")
@@ -24,10 +28,13 @@ public interface ProyectoMapper {
                             @Context StackRepository stackRepository,
                             @Context TagRepository tagRepository);
 
-  @Mapping(target = "collaborators", source = "collaborators")
-  @Mapping(target = "createdAt", source = "createdAt", dateFormat = "dd-MM-yyyy HH:mm:ss")
   @Mapping(target = "status", source = "status")
+  @Mapping(target = "requests", source = "joinRequests")
+  @Mapping(target = "owner", source = "collaborators")
   ProyectoDtoRes proyectoToDtoRes(Proyecto proyecto);
+
+  @Mapping(target = "joinRequests", source = "joinRequests", qualifiedByName = "fromReceiver")
+  ProyectoDetailedDto proyectoToProyectoDetailed(Proyecto proyecto);
 
   List<ProyectoDtoRes> listProyectoToDtoRes(List<Proyecto> proyectos);
 
@@ -38,5 +45,17 @@ public interface ProyectoMapper {
   default Tag map (int tagId, @Context TagRepository tagRepository){
     return tagRepository.findById(tagId).orElseThrow(
             ()-> new EntityNotFoundException("tag no encontrado, id:" + tagId));
+  }
+
+  default String map(Set<Collaborator> collaborators){
+    var collaborator = collaborators.stream()
+            .filter(col->col.getProyectoRole() == ProyectoRole.OWNER)
+            .findFirst()
+            .orElseThrow(()->new RuntimeException("Proyecto invalido, no tiene Dueño."));
+    return collaborator.getUser().getUserName();
+  }
+
+  default int map(List<JoinRequest> joinRequests){
+    return joinRequests != null ? joinRequests.size():0;
   }
 }

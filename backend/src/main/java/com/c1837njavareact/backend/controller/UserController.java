@@ -21,4 +21,8 @@ public class UserController {
     this.userService.deleteById(id);
     return ResponseEntity.ok("Elemento con id: "+id+" eliminado con éxito;");
   }
+//  @GetMapping()
+//  public ResponseEntity<?> getAll(){
+//    return ResponseEntity.ok(this.userService.getAll());
+//  }
 }

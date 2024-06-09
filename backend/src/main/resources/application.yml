@@ -13,6 +13,6 @@ spring:
     open-in-view: true
 jwt:
   secret: ${SECRET_KEY}
-  expirationTime: 1440000
+  expirationTime: 86400000
 api:
   base-path: api/v1

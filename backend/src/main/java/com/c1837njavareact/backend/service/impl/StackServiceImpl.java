@@ -21,8 +21,7 @@ public class StackServiceImpl implements StackService {
 
   @Override
   public StackDtoRes create(StackDtoReq stack) {
-    Stack newStack = new Stack(stack.name());
-    Stack saved = stackRepo.save(newStack);
+    Stack saved = stackRepo.save(this.stackMapper.dtoReqToStack(stack));
     return stackMapper.stackToDtoRes(saved);
   }
 

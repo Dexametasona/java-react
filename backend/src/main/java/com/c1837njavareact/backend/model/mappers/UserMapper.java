@@ -20,10 +20,9 @@ public interface UserMapper {
 
   UserEntity dtoReqToUser(UserDtoReq userDtoReq, @Context StackRepository stackRepo);
 
-  @Mapping(target = "stacks", source = "stacks")
   UserDtoRes userToDtoRes(UserEntity user);
 
-  List<UserDtoRes> listUserToDto(List<UserEntity> users);
+  Set<UserDtoRes> listUserToDto(Set<UserEntity> users);
 
   @Mapping(target = "previous.stacks", source = "stacks")
   void updateUser(UserDtoReq current, Set<Stack> stacks, @MappingTarget UserEntity previous);

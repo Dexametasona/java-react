@@ -8,10 +8,7 @@ import com.c1837njavareact.backend.model.entities.UserEntity;
 import com.c1837njavareact.backend.model.enums.ProyectoRole;
 import com.c1837njavareact.backend.model.mappers.CollaboratorMapper;
 import com.c1837njavareact.backend.model.mappers.JoinMapper;
-import com.c1837njavareact.backend.model.persistence.CollaboratorRepository;
-import com.c1837njavareact.backend.model.persistence.JoinRepository;
-import com.c1837njavareact.backend.model.persistence.ProyectoRepository;
-import com.c1837njavareact.backend.model.persistence.UserRepository;
+import com.c1837njavareact.backend.model.persistence.*;
 import com.c1837njavareact.backend.service.JoinService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +26,7 @@ public class JoinServiceImpl implements JoinService {
   private final ProyectoRepository proyectoRepo;
   private final CollaboratorRepository collaboratorRepo;
   private final CollaboratorMapper collaboratorMapper;
+  private final PositionRepository positionRepository;
 
   @Override
   public JoinRequestDtoRes create(JoinRequestDtoReq joinRequestDto) {
@@ -36,6 +34,7 @@ public class JoinServiceImpl implements JoinService {
     newJoinRequest.setUserOrigin(this.extractUserFromToken());
     newJoinRequest.setUserTarget(this.extractUserOwnerFromProject(newJoinRequest.getProyectoTarget()));
     var joinRequestSaved = joinRepo.save(newJoinRequest);
+    this.proyectoRepo.updateRating(joinRequestDto.proyectoTarget());
     return joinMapper.joinRequestToDtoReqFromOrigin(joinRequestSaved);
   }
 
@@ -65,13 +64,20 @@ public class JoinServiceImpl implements JoinService {
     var joinRequest = this.joinRepo.findById(idRequest);
     if (joinRequest.isPresent()) {
       var newCollaborator = this.collaboratorMapper.joinRequestToCollaborator(
-              joinRequest.get(), userRepo, proyectoRepo);
+              joinRequest.get(),
+              userRepo,
+              proyectoRepo);
       if (verifyUserInTokenMatchRequest(joinRequest.get())) {
         this.collaboratorRepo.save(newCollaborator);
         this.deleteById(idRequest);
+        var position  = this.positionRepository
+                .findByProyectoRoleAndProyecto_Id(
+                        newCollaborator.getProyectoRole(),
+                        newCollaborator.getProyecto().getId());
+        position.ifPresent(value -> this.positionRepository.updateQuantity(value.getId()));
         return;
       }
-      throw new RuntimeException("Permisos insuficientes para responder esta solicitud.");
+      throw new RuntimeException("Solo el destinatario de la solicitud puede responder.");
     }
     throw new EntityNotFoundException("Solicitud no encontrada, id:" + idRequest);
   }
@@ -84,7 +90,7 @@ public class JoinServiceImpl implements JoinService {
         this.deleteById(idRequest);
         return;
       }
-      throw new RuntimeException("Permisos insuficientes para denegar esta solicitud.");
+      throw new RuntimeException("Solo el destinatario de la solicitud puede responder.");
     }
     throw new EntityNotFoundException("Solicitud no encontrada, id:" + idRequest);
   }

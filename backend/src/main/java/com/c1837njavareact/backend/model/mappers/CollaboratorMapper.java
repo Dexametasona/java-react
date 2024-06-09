@@ -26,7 +26,6 @@ public interface CollaboratorMapper {
 
   @Mapping(target = "user", source = "userOrigin")
   @Mapping(target = "proyecto", source = "proyectoTarget")
-  @Mapping(target = "proyectoRole", constant = "COLLABORATOR")
   @Mapping(target = "id", ignore = true)
   Collaborator joinRequestToCollaborator(JoinRequest joinRequest,
                                          @Context UserRepository userRepository,

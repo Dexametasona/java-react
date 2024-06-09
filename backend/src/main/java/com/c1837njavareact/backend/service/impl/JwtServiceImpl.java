@@ -2,6 +2,7 @@ package com.c1837njavareact.backend.service.impl;
 
 import com.c1837njavareact.backend.service.JwtService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -42,7 +43,7 @@ public class JwtServiceImpl implements JwtService {
   }
 
   @Override
-  public String getUsernameFromToken(String token) {
+  public String getUsernameFromToken(String token) throws ExpiredJwtException{
     return this.getClaim(token, Claims::getSubject);
   }
 
@@ -52,7 +53,8 @@ public class JwtServiceImpl implements JwtService {
     return email.equals(userDetails.getUsername()) &&
             !isTokenExpired(token);
   }
-  private Claims getAllClaims(String token){
+
+  private Claims getAllClaims(String token) throws ExpiredJwtException {
     return Jwts.parser()
             .verifyWith(this.getKey())
             .build()
@@ -60,7 +62,7 @@ public class JwtServiceImpl implements JwtService {
             .getPayload();
   }
 
-  private <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
+  private <T> T getClaim(String token, Function<Claims, T> claimsResolver) throws ExpiredJwtException {
     final Claims claims = this.getAllClaims(token);
     return claimsResolver.apply(claims);
   }

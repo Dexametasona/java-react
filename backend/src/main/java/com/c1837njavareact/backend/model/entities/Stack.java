@@ -17,14 +17,6 @@ public class Stack {
   private int id;
   @Column(length = 50)
   private String name;
+  private String color;
 
-  @ManyToMany(mappedBy = "stacks")
-  private Set<Proyecto> proyectos = new HashSet<>();
-
-  @ManyToMany(mappedBy = "stacks")
-  private Set<Proyecto> users = new HashSet<>();
-
-  public Stack(String name){
-    this.name = name;
-  }
 }
