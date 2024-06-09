@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import SelectableForm from "./prueba";
-import { addProjects, projectsFail, showForm, showFormProjects } from "../redux/projects/projectSlice";
+import { addProjects, projectsFail,resetSuccess,showFormProjects } from "../redux/projects/projectSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
 const FormCreateProject = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -31,6 +32,7 @@ const FormCreateProject = () => {
         .required("Debe incluir una descripción"),
     }),
     onSubmit: async (values) => {
+      console.log("submit")
       if (selectedOptions.length > 0) {
         setError(false)
         values.stacks = selectedOptions;
@@ -51,7 +53,7 @@ const FormCreateProject = () => {
     Swal.fire({
       position: "top-end",
       allowOutsideClick: false,
-      text: "Error al iniciar sesión",
+      text: "Error al crear Proyecto",
       icon: "error",
     }).then((result) => {
       if (result.isConfirmed) {
@@ -64,11 +66,12 @@ const FormCreateProject = () => {
     Swal.fire({
       position: "top-end",
       allowOutsideClick: false,
-      text: "Error al iniciar sesión",
-      icon: "error",
+      text: "Proyecto creado",
+      icon: "success",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(showForm(false));
+        dispatch(showFormProjects(false));
+        dispatch(resetSuccess())
       }
     });
   }

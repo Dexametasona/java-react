@@ -25,32 +25,32 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { user } = useSelector(
-    (store) => store.userAuth
-  );
+  const { user } = useSelector((store) => store.userAuth);
 
-  const handleApply = () =>{
-    user ? navigate(`/details`) : 
-    Swal.fire({
-      allowOutsideClick: false,
-      title: `Debe iniciar sesión para continuar`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dispatch(showLogin(true))
-      }
-    });
-  }
+  const handleApply = () => {
+    user
+      ? navigate(`/details`)
+      : Swal.fire({
+          allowOutsideClick: false,
+          title: `Debe iniciar sesión para continuar`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            dispatch(showLogin(true));
+          }
+        });
+  };
 
   return (
     <section className="w-full">
-      <figure className="mt-4 relative hover:bg-[#05050550]">
+      {/* <figure className="mt-4 relative hover:bg-[#05050550]"> */}
+      <figure className="mt-4 relative">
         <img className="w-full object-cover" src={banner} alt="banner" />
         <figcaption className="absolute inset-0 flex flex-col justify-center items-center w-full h-full top-0">
           <h1 className="font-bold font-title text-secondary-color md:text-4xl text-xl">
-            Pick the Template You Love
+          Encuentra tu proyecto perfecto
           </h1>
           <p className="text-secondary-color mt-2">
-            Encuentra tu proyecto perfecto
+            Para crecer tu perfil profesional
           </p>
         </figcaption>
       </figure>
@@ -126,8 +126,12 @@ const Dashboard = () => {
           ? projects?.map((item) => (
               <div key={item} className="w-[32%] bg-primary-color rounded-xl">
                 <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
+                  <p className="font-body italic text-end text-highlight-color text-sm opacity-80">
+                    En espera
+                  </p>
+
                   <h2 className="font-body font-bold text-xl text-primary-color">
-                    Dexametasona Product{" "}
+                    Dexametasona Product
                   </h2>
                   <p className="font-title text-gray-card my-2 text-base">
                     Owner: Jose Perez
@@ -154,8 +158,9 @@ const Dashboard = () => {
                         : null}
                     </div>
                     <button
-                    onClick={()=>handleApply()}
-                     className="font-semibold border-2 border-highlight-color px-4 py-1 rounded-xl text-highlight-color hover:bg-highlight-color hover:text-secondary-color">
+                      onClick={() => handleApply()}
+                      className="font-semibold border-2 border-highlight-color px-4 py-1 rounded-xl text-highlight-color hover:bg-highlight-color hover:text-secondary-color"
+                    >
                       Apply
                     </button>
                   </div>
@@ -232,12 +237,15 @@ const Dashboard = () => {
           </li>
         </ul>
       </nav>
-
       <div className="">
         <h2 className="w-full text-3xl font-bold font-title text-secondary-color  text-start border-s-4 border-highlight-color ps-2 my-6">
           Populares
         </h2>
-        <CardsCarousel projects={projects??null} stacks={stacks ?? null} handler={handleApply}/>
+        <CardsCarousel
+          projects={projects ?? null}
+          stacks={stacks ?? null}
+          handler={handleApply}
+        />
       </div>
     </section>
   );

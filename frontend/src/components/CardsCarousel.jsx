@@ -23,7 +23,7 @@ const CardsCarousel = ({ projects, stacks, cancel, handler}) => {
               >
                 <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
                   <h2 className="font-body font-bold text-xl text-primary-color">
-                    Dexametasona Product{" "}
+                    Dexametasona Product
                   </h2>
                   <p className="font-title text-gray-card my-2 text-base">
                     Owner: Jose Perez

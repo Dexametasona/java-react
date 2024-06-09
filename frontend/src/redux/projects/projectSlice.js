@@ -14,7 +14,6 @@ const projectsSlice = createSlice({
   reducers: {
     projectsRequest: (state) => {
       state.isLoadingProjects = true;
-      state.isSuccessProjects = false;
       state.errorProjects = null;
     },
     fillProjects: (state, action) => {
@@ -46,10 +45,14 @@ const projectsSlice = createSlice({
     showFormProjects: (state, action) => {
       state.showForm = action.payload;
     },
+    resetSuccess:(state) => {
+      state.isSuccessProjects = false;
+    },
   },
 });
 
 export const {
+  resetSuccess,
   showFormProjects,
   projectsFail,
   projectsRequest,

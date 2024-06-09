@@ -11,7 +11,8 @@ export default {
       "highlight-color": "#FF2B2B",
       "line-color": "#FF5A5AFF",
       "modal":"rgba(86,93,109,0.3)",
-      "gray-card": "#BDC0C9"
+      "gray-card": "#BDC0C9",
+      "check":"#0D632A"
     },
 
     extend: {

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import CardsCarousel from "../components/CardsCarousel";
 import FormCreateProject from "../components/FormCreateProject";
 import { useDispatch, useSelector } from "react-redux";
+import { showFormProjects } from "../redux/projects/projectSlice";
 
 const Profile = () => {
   const projects = [1, 2, 3, 4, 5];
@@ -19,10 +20,14 @@ const Profile = () => {
     },
   ];
   const dispatch = useDispatch();
-  const { showForm } = useSelector(
+  // const {projects, showForm } = useSelector(
+  //   (store) => store.projects
+  // );
+  const {showForm } = useSelector(
     (store) => store.projects
   );
-
+  console.log(projects)
+  console.log(projects.length)
   const handler = () => {
     console.log("click cancel");
   };
@@ -189,7 +194,6 @@ const Profile = () => {
           />
         ) : (
           <p className="text-secondary-color ms-2">
-            {" "}
             No tienes solicitudes en este momento
           </p>
         )}
