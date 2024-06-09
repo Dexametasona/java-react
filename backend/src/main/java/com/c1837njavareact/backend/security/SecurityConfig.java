@@ -30,7 +30,8 @@ public class SecurityConfig {
     http.cors(c->{
       CorsConfigurationSource source = request -> {
         var corsConfig = new CorsConfiguration();
-        corsConfig.setAllowedOrigins(List.of("http://localhost:8080"));
+        corsConfig.setAllowedOrigins(List.of("http://localhost:8080",
+                "http://localhost:5173"));
         corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         corsConfig.setAllowedHeaders(List.of("*"));
         return corsConfig;

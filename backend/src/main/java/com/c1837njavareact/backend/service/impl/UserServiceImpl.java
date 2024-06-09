@@ -1,5 +1,6 @@
 package com.c1837njavareact.backend.service.impl;
 
+import com.c1837njavareact.backend.model.dto.EmailDto;
 import com.c1837njavareact.backend.model.dto.UserDtoReq;
 import com.c1837njavareact.backend.model.dto.UserDtoRes;
 import com.c1837njavareact.backend.model.mappers.UserMapper;
@@ -24,9 +25,9 @@ public class UserServiceImpl implements UserService {
 
 
   @Override
-  public UserDtoRes getById(int id) {
-    var userFounded = this.userRepo.findById(id).orElseThrow(
-            () -> new EntityNotFoundException("usuario no encontrado, id:" + id));
+  public UserDtoRes getByEmail(EmailDto emailDto) {
+    var userFounded = this.userRepo.findByEmail(emailDto.email()).orElseThrow(
+            () -> new EntityNotFoundException("usuario no encontrado, email:" + emailDto.email()));
     return userMapper.userToDtoRes(userFounded);
   }
 

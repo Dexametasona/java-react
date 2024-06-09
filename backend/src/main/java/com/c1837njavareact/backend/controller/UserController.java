@@ -1,5 +1,6 @@
 package com.c1837njavareact.backend.controller;
 
+import com.c1837njavareact.backend.model.dto.EmailDto;
 import com.c1837njavareact.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
   private final UserService userService;
 
-  @GetMapping("/{id}")
-  public ResponseEntity<?> getById(@PathVariable int id){
-    return ResponseEntity.ok(this.userService.getById(id));
+  @PostMapping
+  public ResponseEntity<?> getById(@RequestBody EmailDto emailDto){
+    return ResponseEntity.ok(this.userService.getByEmail(emailDto));
   }
   @DeleteMapping("/{id}")
   public ResponseEntity<String> deleteById(@PathVariable int id){
