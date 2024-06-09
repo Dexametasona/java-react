@@ -7,38 +7,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class JoinRequest {
+public class Position {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;
+
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private ProyectoRole proyectoRole;
-  private String message;
-  @Column(updatable = false, nullable = false)
-  private LocalDateTime createdAt;
 
+  @Column(nullable = false, columnDefinition = "SMALLINT")
+  private int quantity;
+  @Column(nullable = false, length = 1000)
+  private String description;
   @ManyToOne
-  @JoinColumn(name = "userTarget_id")
-  private UserEntity userTarget;
-
-  @ManyToOne
-  @JoinColumn(name = "userOrigin_id")
-  private UserEntity userOrigin;
-
-  @ManyToOne
-  @JoinColumn(name = "proyectoTarget_id")
-  private Proyecto proyectoTarget;
-
-  @PrePersist
-  public void onCreate(){
-    this.createdAt = LocalDateTime.now();
-  }
+  @JoinColumn(name = "proyecto_id")
+  private Proyecto proyecto;
 }

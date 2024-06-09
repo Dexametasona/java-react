@@ -7,11 +7,13 @@ import com.c1837njavareact.backend.model.persistence.StackRepository;
 import com.c1837njavareact.backend.model.persistence.UserRepository;
 import com.c1837njavareact.backend.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -28,10 +30,11 @@ public class UserServiceImpl implements UserService {
     return userMapper.userToDtoRes(userFounded);
   }
 
+  @Transactional
   @Override
-  public List<UserDtoRes> getAll() {
+  public Set<UserDtoRes> getAll() {
     var users = this.userRepo.findAll();
-    return users.stream().map(userMapper::userToDtoRes).toList();
+    return users.stream().map(userMapper::userToDtoRes).collect(Collectors.toSet());
   }
 
   @Override

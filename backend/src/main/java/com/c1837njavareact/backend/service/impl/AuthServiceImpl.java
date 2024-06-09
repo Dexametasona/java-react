@@ -42,7 +42,6 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public LoginDtoRes login(LoginDtoReq request) {
-    System.out.println("comunismo");
     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
     var userDetail = userRepo.findByEmail(request.email()).orElseThrow(
             ()->new EntityNotFoundException("usuario no encontrado, email: "+request.email()));

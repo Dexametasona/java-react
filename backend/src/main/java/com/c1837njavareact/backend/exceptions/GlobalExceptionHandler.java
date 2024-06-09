@@ -1,5 +1,6 @@
 package com.c1837njavareact.backend.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,9 +40,16 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(ExpiredJwtException.class)
+  public ResponseEntity<?> handleExpiredToken(ExpiredJwtException ex){
+    ErrorDetails error = new ErrorDetails(LocalDateTime.now(), "El token ha expirado.", ex.getMessage());
+    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+  }
+
   @ExceptionHandler(Exception.class)
   public ResponseEntity<?> handleGlobalExceptions(Exception ex, WebRequest request){
     ErrorDetails error = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false) );
     return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
   }
+
 }

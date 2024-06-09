@@ -1,6 +1,8 @@
 package com.c1837njavareact.backend.controller;
 
 import com.c1837njavareact.backend.model.dto.ProyectoDtoReq;
+import com.c1837njavareact.backend.model.dto.ProyectoDtoRes;
+import com.c1837njavareact.backend.model.dto.StatusDto;
 import com.c1837njavareact.backend.service.ProyectoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,7 @@ public class ProyectoController {
 
   @GetMapping
   public ResponseEntity<?> getAll(@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "10") int size,
+                                  @RequestParam(defaultValue = "9") int size,
                                   @RequestParam(defaultValue = "id") String sort,
                                   @RequestParam(defaultValue = "asc") String direction){
     Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
@@ -39,6 +41,11 @@ public class ProyectoController {
   @PutMapping("/{id}")
   public ResponseEntity<?> updateById(@PathVariable int id, @RequestBody ProyectoDtoReq proyecto){
     return ResponseEntity.ok(this.proyectoService.update(proyecto, id));
+  }
+
+  @PatchMapping("/{id}")
+  public ResponseEntity<?> updateStatusById(@PathVariable int id, @RequestBody StatusDto status){
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(this.proyectoService.updateStatusById(id, status));
   }
 
   @DeleteMapping("/{id}")

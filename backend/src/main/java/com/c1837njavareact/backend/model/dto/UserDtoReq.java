@@ -9,11 +9,10 @@ import java.util.List;
 
 public record UserDtoReq(
         @Pattern(regexp = "^[^\\s]+$", message = "No se permiten espacios.")
-        @NotNull(message = "El campo userName no puede ser nulo.")
         @Size(min = 3, max = 25)
         String userName,
         @Pattern(regexp = "^[a-zA-Z0-9._-]{2,}@[a-zA-Z0-9-]{2,}\\.[a-zA-Z]{2,}$",
-             message = "No coíncide con ^[a-zA-Z0-9._-]{2,}@[a-zA-Z0-9-]{2,}\\.[a-zA-Z]{2,}$")
+        message = "No coíncide con ^[a-zA-Z0-9._-]{2,}@[a-zA-Z0-9-]{2,}\\.[a-zA-Z]{2,}$")
         @Size(min = 10)
         String email,
         @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-_+|!¡@#$%^&\\.{}\\*\"'\\/()=?!¿'´~;,:<>°])[A-Za-z\\d-_+|!¡@#$%^&\\.{}\\*\"'\\/()=?!¿'´~;,:<>°]+$")

@@ -1,13 +1,13 @@
 package com.c1837njavareact.backend.model.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 public record UserDtoRes(
         int id,
         String userName,
         String email,
-        List<StackDtoRes> stacks,
+        Set<StackDtoRes> stacks,
         LocalDateTime createdAt
 ) {
 }

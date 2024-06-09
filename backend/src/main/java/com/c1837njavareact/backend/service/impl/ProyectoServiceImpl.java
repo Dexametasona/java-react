@@ -1,7 +1,9 @@
 package com.c1837njavareact.backend.service.impl;
 
+import com.c1837njavareact.backend.model.dto.ProyectoDetailedDto;
 import com.c1837njavareact.backend.model.dto.ProyectoDtoReq;
 import com.c1837njavareact.backend.model.dto.ProyectoDtoRes;
+import com.c1837njavareact.backend.model.dto.StatusDto;
 import com.c1837njavareact.backend.model.entities.Collaborator;
 import com.c1837njavareact.backend.model.entities.Proyecto;
 import com.c1837njavareact.backend.model.enums.ProyectoRole;
@@ -13,14 +15,12 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.Context;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -45,10 +45,10 @@ public class ProyectoServiceImpl implements ProyectoService {
   }
 
   @Override
-  public ProyectoDtoRes getById(int id) {
+  public ProyectoDetailedDto getById(int id) {
     Proyecto proyecto  = this.proyectoRepo.findById(id).orElseThrow(
             ()->new EntityNotFoundException("proyecto no encontrado, id: " + id));
-    return proyectoMapper.proyectoToDtoRes(proyecto);
+    return proyectoMapper.proyectoToProyectoDetailed(proyecto);
   }
 
   @Override
@@ -74,6 +74,16 @@ public class ProyectoServiceImpl implements ProyectoService {
      throw new EntityNotFoundException("Proyecto no encontrado id "+ id);
     }
   }
+
+  @Override
+  public ProyectoDetailedDto updateStatusById(int id, StatusDto status) {
+    if(this.proyectoRepo.existsById(id)){
+      this.proyectoRepo.updateStatusById(id, status.status());
+      return this.getById(id);
+    }
+    throw new EntityNotFoundException("proyecto no encontrado, id:"+id);
+  }
+
   private Set<Collaborator> generateOwner(Proyecto proyecto){
     var ownerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
     var user = userRepo.findByEmail(ownerEmail).orElseThrow(

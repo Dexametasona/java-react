@@ -1,6 +1,7 @@
 package com.c1837njavareact.backend.security.filters;
 
 import com.c1837njavareact.backend.service.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +19,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
@@ -31,12 +35,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                   @NonNull HttpServletResponse response,
                                   @NonNull FilterChain filterChain) throws ServletException, IOException {
     final String token = this.getTokenFromRequest(request);
-    String username;
+    String username = null;
+
     if (token == null) {
       filterChain.doFilter(request, response);
       return;
     }
-    username = jwtService.getUsernameFromToken(token);
+    try {
+      username = jwtService.getUsernameFromToken(token);
+    } catch (ExpiredJwtException e) {
+      response.setStatus(HttpStatus.UNAUTHORIZED.value());
+      response.getWriter().write(e.getMessage());
+      response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    }
     boolean isAuthenticated = SecurityContextHolder.getContext().getAuthentication() != null;
 
     if (username != null && !isAuthenticated) {
