@@ -14,7 +14,7 @@ const SelectableForm = ({ onOptionsChange,  showError=false}) => {
       color: "#6CB23E",
     },
   ];
-  const [options] = useState(["Opción 1", "Opción 2", "Opción 3", "Opción 4"]);
+  const [options] = useState(["React", "Angular", "Spring boot", "Laravel"]);
 
   useEffect(() => {
     onOptionsChange(selectedOptions)
