@@ -6,7 +6,7 @@ import { loginFail, loginSucess, showLogin } from "../redux/userAuth/userAuthSli
 import Charging from "./Charging";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { actionLogin, actionUserInfo } from "../redux/userAuth/userAuthActions";
+import { actionLogin} from "../redux/userAuth/userAuthActions";
 
 const Login = () => {
   const { user, isAuth, isLoading, error } = useSelector(
@@ -52,21 +52,16 @@ const Login = () => {
     });
   }
   
-  // if (isAuth != null) {
-  //   const config = {
-  //     headers: { Authorization: `Bearer ${isAuth}` }
-  //   };
-  
-  //   dispatch(actionUserInfo())
-  //   Swal.fire({
-  //     allowOutsideClick: false,
-  //     title: `Bienvenido ${user.email}`,
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       dispatch(showLogin(false))
-  //     }
-  //   });
-  // }
+  if (isAuth !=null && user != null) {
+    Swal.fire({
+      allowOutsideClick: false,
+      title: `Bienvenido ${user.userName}`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(showLogin(false))
+      }
+    });
+  }
 
   return (
     <div className="bg-secondary-color w-2/5 px-8 py-2 rounded-xl border border-highlight-color shadow-[0px_0px_35px_4px_rgba(255,43,43,1)]">
