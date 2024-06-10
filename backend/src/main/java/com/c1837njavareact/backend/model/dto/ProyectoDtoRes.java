@@ -13,6 +13,5 @@ public record ProyectoDtoRes(
         String owner,
         TagDtoRes tag,
         Status status,
-        int requests,
         int rating
 ) {}

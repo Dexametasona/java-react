@@ -29,7 +29,6 @@ public interface ProyectoMapper {
                             @Context TagRepository tagRepository);
 
   @Mapping(target = "status", source = "status")
-  @Mapping(target = "requests", source = "joinRequests")
   @Mapping(target = "owner", source = "collaborators")
   ProyectoDtoRes proyectoToDtoRes(Proyecto proyecto);
 
