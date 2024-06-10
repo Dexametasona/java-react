@@ -26,8 +26,7 @@ const Profile = () => {
   const {showForm } = useSelector(
     (store) => store.projects
   );
-  console.log(projects)
-  console.log(projects.length)
+
   const handler = () => {
     console.log("click cancel");
   };

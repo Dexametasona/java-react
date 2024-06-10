@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import banner from "../assets/Banner.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { showLogin } from "../redux/userAuth/userAuthSlice";
 import CardsCarousel from "../components/CardsCarousel";
+import { actionGetProjects } from "../redux/projects/projectsActions";
 
 const Dashboard = () => {
   const [filterSelected, setFilterSelected] = useState("all");
-  const projects = [1, 2, 3, 4, 5, 6, 7, 8];
   const stacks = [
     {
       id: "1A23C",
@@ -21,11 +21,21 @@ const Dashboard = () => {
       color: "#6CB23E",
     },
   ];
+  const popular = [1, 2, 3, 4, 5];
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { user } = useSelector((store) => store.userAuth);
+  const { projects } = useSelector((store) => store.projects);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const totalPages = projects?.totalPages;
+  const pageSize = 9;
+
+  useEffect(() => {
+    dispatch(actionGetProjects(currentPage, pageSize));
+  }, [currentPage, dispatch]);
 
   const handleApply = () => {
     user
@@ -40,6 +50,19 @@ const Dashboard = () => {
         });
   };
 
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 0 && pageNumber < totalPages) {
+      setCurrentPage(pageNumber);
+      // Aquí puedes realizar una llamada a la API para obtener los datos de la nueva página si es necesario
+    }
+  };
+  const firstCardRef = useRef(null);
+  useEffect(() => {
+    if (firstCardRef.current) {
+      firstCardRef.current.focus();
+    }
+  }, [projects]);
+
   return (
     <section className="w-full">
       {/* <figure className="mt-4 relative hover:bg-[#05050550]"> */}
@@ -47,7 +70,7 @@ const Dashboard = () => {
         <img className="w-full object-cover" src={banner} alt="banner" />
         <figcaption className="absolute inset-0 flex flex-col justify-center items-center w-full h-full top-0">
           <h1 className="font-bold font-title text-secondary-color md:text-4xl text-xl">
-          Encuentra tu proyecto perfecto
+            Encuentra tu proyecto perfecto
           </h1>
           <p className="text-secondary-color mt-2">
             Para crecer tu perfil profesional
@@ -122,28 +145,28 @@ const Dashboard = () => {
         </ul>
       </div>
       <div className="flex flex-wrap gap-3 my-8">
-        {projects.length > 0
-          ? projects?.map((item) => (
-              <div key={item} className="w-[32%] bg-primary-color rounded-xl">
+        {projects.content?.length > 0
+          ? projects.content?.map((item,index) => (
+              <div
+              ref={index === 0 ? firstCardRef : null}
+              tabIndex={index === 0 ? -1 : null}
+                key={item.id}
+                className="w-[32%] bg-primary-color rounded-xl mb-2 focus:outline-none focus:border-transparent"
+              >
                 <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
-                  <p className="font-body italic text-end text-highlight-color text-sm opacity-80">
-                    En espera
+                  <div className="h-14 overflow-hidden flex items-center">
+                    <h2 className="font-body font-bold text-xl text-primary-color">
+                      {item.name}
+                    </h2>
+                  </div>
+                  <p className="font-title text-gray-card pt-1 mb-2 text-base">
+                    Owner: {item.owner}
                   </p>
-
-                  <h2 className="font-body font-bold text-xl text-primary-color">
-                    Dexametasona Product
-                  </h2>
-                  <p className="font-title text-gray-card my-2 text-base">
-                    Owner: Jose Perez
-                  </p>
-                  <p>
-                    Consectetur adipisicing esse commodo mollit laboris culpa et
-                    officia quis dolore velit duis ut ullamco{" "}
-                  </p>
-                  <div className="flex flex-row justify-between my-6">
-                    <div className="flex gap-2">
-                      {stacks.length > 0
-                        ? stacks?.map((item) => (
+                  <p>{item.description}</p>
+                  <div className="flex flex-row justify-between my-4 h-8 overflow-hidden hover:overflow-y-auto hover:opacity-60">
+                    <div className="flex flex-wrap gap-2">
+                      {item.stacks.length > 0
+                        ? item.stacks?.map((item) => (
                             <div key={item.id} className="flex items-center">
                               <div
                                 className={`w-2 h-2 mx-2 rounded-full`}
@@ -157,16 +180,21 @@ const Dashboard = () => {
                           ))
                         : null}
                     </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <p className="font-body italic text-end text-highlight-color text-sm opacity-80">
+                      {item.status}
+                    </p>
                     <button
                       onClick={() => handleApply()}
-                      className="font-semibold border-2 border-highlight-color px-4 py-1 rounded-xl text-highlight-color hover:bg-highlight-color hover:text-secondary-color"
+                      className="animate__animated animate__shakeX animate__slow animate__delay-2s font-semibold border-2 border-highlight-color px-4 py-1 rounded-xl text-highlight-color hover:bg-highlight-color hover:text-secondary-color"
                     >
-                      Apply
+                      Aplicar
                     </button>
                   </div>
                 </div>
                 <h4 className="m-2 text-secondary-color font-body font-bold">
-                  Landing Page
+                  {item.tag.name}
                 </h4>
               </div>
             ))
@@ -175,7 +203,12 @@ const Dashboard = () => {
       <nav className="flex justify-center my-6">
         <ul className="flex flex-row items-center">
           <li>
-            <button className="p-4 bg-transparent hover:bg-highlight-color rounded-full">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              className={`p-4 bg-transparent hover:bg-highlight-color rounded-full ${
+                currentPage === 0 ? "hidden" : "flex"
+              } `}
+            >
               <svg
                 className="w-3 h-3 rtl:rotate-180 stroke-secondary-color"
                 aria-hidden="true"
@@ -192,33 +225,29 @@ const Dashboard = () => {
               </svg>
             </button>
           </li>
+
+          {[...Array(totalPages)].map((_, index) => (
+            <li key={index}>
+              <button
+                onClick={() => handlePageChange(index)}
+                className={`px-4 py-2 rounded-full ${
+                  index === currentPage
+                    ? "bg-highlight-color"
+                    : "bg-transparent hover:bg-highlight-color"
+                }`}
+              >
+                <p className="font-bold text-secondary-color ">{index + 1}</p>
+              </button>
+            </li>
+          ))}
+
           <li>
-            <button className="px-4 py-2 bg-highlight-color rounded-full">
-              <p className="font-bold text-secondary-color ">1</p>
-            </button>
-          </li>
-          <li>
-            <button className="px-4 py-2 bg-transparent hover:bg-highlight-color rounded-full">
-              <p className="font-bold text-secondary-color ">2</p>
-            </button>
-          </li>
-          <li>
-            <button className="px-4 py-2 bg-transparent hover:bg-highlight-color rounded-full">
-              <p className="font-bold text-secondary-color ">...</p>
-            </button>
-          </li>
-          <li>
-            <button className="px-4 py-2 bg-transparent hover:bg-highlight-color rounded-full">
-              <p className="font-bold text-secondary-color ">10</p>
-            </button>
-          </li>
-          <li>
-            <button className="px-4 py-2 bg-transparent hover:bg-highlight-color rounded-full">
-              <p className="font-bold text-secondary-color ">11</p>
-            </button>
-          </li>
-          <li>
-            <button className="p-4 bg-transparent hover:bg-highlight-color rounded-full">
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              className={`p-4 bg-transparent hover:bg-highlight-color rounded-full ${
+                currentPage === totalPages - 1 ? "hidden" : "flex"
+              }`}
+            >
               <svg
                 className="w-3 h-3 rtl:rotate-180 stroke-secondary-color"
                 aria-hidden="true"
@@ -242,7 +271,7 @@ const Dashboard = () => {
           Populares
         </h2>
         <CardsCarousel
-          projects={projects ?? null}
+          projects={popular ?? null}
           stacks={stacks ?? null}
           handler={handleApply}
         />

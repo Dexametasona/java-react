@@ -2,10 +2,11 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { loginSucess, showLogin } from "../redux/userAuth/userAuthSlice";
+import { loginFail, loginSucess, showLogin } from "../redux/userAuth/userAuthSlice";
 import Charging from "./Charging";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { actionLogin, actionUserInfo } from "../redux/userAuth/userAuthActions";
 
 const Login = () => {
   const { user, isAuth, isLoading, error } = useSelector(
@@ -26,7 +27,8 @@ const Login = () => {
     }),
     onSubmit: async (values) => {
       // console.log(values)
-      dispatch(loginSucess(values))
+      // dispatch(loginSucess(values))
+      dispatch(actionLogin(values))
       // dispatch(actionLoginWithEmailAndPassword(values));
     },
   });
@@ -40,7 +42,8 @@ const Login = () => {
     Swal.fire({
       position: "top-end",
       allowOutsideClick: false,
-      text: "Error al iniciar sesión",
+      title: "Error al iniciar sesión",
+      text:"Verifique sus datos",
       icon: "error",
     }).then((result) => {
       if (result.isConfirmed) {
@@ -48,17 +51,22 @@ const Login = () => {
       }
     });
   }
-
-  if (isAuth && user) {
-    Swal.fire({
-      allowOutsideClick: false,
-      title: `Bienvenido ${user.email}`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dispatch(showLogin(false))
-      }
-    });
-  }
+  
+  // if (isAuth != null) {
+  //   const config = {
+  //     headers: { Authorization: `Bearer ${isAuth}` }
+  //   };
+  
+  //   dispatch(actionUserInfo())
+  //   Swal.fire({
+  //     allowOutsideClick: false,
+  //     title: `Bienvenido ${user.email}`,
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       dispatch(showLogin(false))
+  //     }
+  //   });
+  // }
 
   return (
     <div className="bg-secondary-color w-2/5 px-8 py-2 rounded-xl border border-highlight-color shadow-[0px_0px_35px_4px_rgba(255,43,43,1)]">
