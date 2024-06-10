@@ -1,5 +1,6 @@
 package com.c1837njavareact.backend.controller;
 
+import com.c1837njavareact.backend.model.dto.EmailDto;
 import com.c1837njavareact.backend.model.dto.ProyectoDtoReq;
 import com.c1837njavareact.backend.model.dto.ProyectoDtoRes;
 import com.c1837njavareact.backend.model.dto.StatusDto;
@@ -37,14 +38,18 @@ public class ProyectoController {
   public ResponseEntity<?> getById(@PathVariable int id){
     return ResponseEntity.ok(this.proyectoService.getById(id));
   }
+  @PostMapping("/owner")
+  public ResponseEntity<?> getByOwner(@Valid @RequestBody EmailDto email){
+    return ResponseEntity.status(HttpStatus.FOUND).body(this.proyectoService.getByOwner(email));
+  }
 
   @PutMapping("/{id}")
-  public ResponseEntity<?> updateById(@PathVariable int id, @RequestBody ProyectoDtoReq proyecto){
+  public ResponseEntity<?> updateById(@PathVariable int id, @Valid @RequestBody ProyectoDtoReq proyecto){
     return ResponseEntity.ok(this.proyectoService.update(proyecto, id));
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<?> updateStatusById(@PathVariable int id, @RequestBody StatusDto status){
+  public ResponseEntity<?> updateStatusById(@PathVariable int id, @Valid @RequestBody StatusDto status){
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(this.proyectoService.updateStatusById(id, status));
   }
 

@@ -1,9 +1,6 @@
 package com.c1837njavareact.backend.service.impl;
 
-import com.c1837njavareact.backend.model.dto.ProyectoDetailedDto;
-import com.c1837njavareact.backend.model.dto.ProyectoDtoReq;
-import com.c1837njavareact.backend.model.dto.ProyectoDtoRes;
-import com.c1837njavareact.backend.model.dto.StatusDto;
+import com.c1837njavareact.backend.model.dto.*;
 import com.c1837njavareact.backend.model.entities.Collaborator;
 import com.c1837njavareact.backend.model.entities.Proyecto;
 import com.c1837njavareact.backend.model.enums.ProyectoRole;
@@ -22,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -82,6 +80,15 @@ public class ProyectoServiceImpl implements ProyectoService {
       return this.getById(id);
     }
     throw new EntityNotFoundException("proyecto no encontrado, id:"+id);
+  }
+
+  @Override
+  public Set<ProyectoDtoRes> getByOwner(EmailDto data) {
+    var proyectos = proyectoRepo.findByCollaborators_User_EmailAndCollaborators_ProyectoRole(
+            data.email(), ProyectoRole.OWNER);
+    return proyectos.stream()
+            .map(proyectoMapper::proyectoToDtoRes)
+            .collect(Collectors.toSet());
   }
 
   private Set<Collaborator> generateOwner(Proyecto proyecto){
