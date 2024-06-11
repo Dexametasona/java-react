@@ -19,4 +19,6 @@ public interface PositionRepository extends JpaRepository<Position, Integer> {
   void updateQuantity(@Param("id") int id);
 
   Optional<Position> findByProyectoRoleAndProyecto_Id(ProyectoRole proyectoRole, int id);
+
+  void deleteByQuantityLessThan(int quantity);
 }

@@ -1,6 +1,7 @@
 package com.c1837njavareact.backend.service;
 
 import com.c1837njavareact.backend.model.dto.*;
+import com.c1837njavareact.backend.model.enums.ProyectoRole;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,4 +17,5 @@ public interface ProyectoService {
   ProyectoDetailedDto updateStatusById(int id, StatusDto status);
 
   Set<ProyectoDtoRes> getByOwner(EmailDto email);
+  Set<ProyectoDtoRes> getByRole(ProyectoRole role);
 }

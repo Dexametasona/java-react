@@ -4,6 +4,7 @@ import com.c1837njavareact.backend.model.dto.EmailDto;
 import com.c1837njavareact.backend.model.dto.ProyectoDtoReq;
 import com.c1837njavareact.backend.model.dto.ProyectoDtoRes;
 import com.c1837njavareact.backend.model.dto.StatusDto;
+import com.c1837njavareact.backend.model.enums.ProyectoRole;
 import com.c1837njavareact.backend.service.ProyectoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,12 @@ public class ProyectoController {
   public ResponseEntity<?> getById(@PathVariable int id){
     return ResponseEntity.ok(this.proyectoService.getById(id));
   }
+
+  @GetMapping("/role/{role}")
+  public ResponseEntity<?> getByRole(@PathVariable ProyectoRole role){
+    return ResponseEntity.ok(this.proyectoService.getByRole(role));
+  }
+
   @PostMapping("/owner")
   public ResponseEntity<?> getByOwner(@Valid @RequestBody EmailDto email){
     return ResponseEntity.status(HttpStatus.FOUND).body(this.proyectoService.getByOwner(email));

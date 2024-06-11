@@ -26,7 +26,7 @@ public class JoinServiceImpl implements JoinService {
   private final ProyectoRepository proyectoRepo;
   private final CollaboratorRepository collaboratorRepo;
   private final CollaboratorMapper collaboratorMapper;
-  private final PositionRepository positionRepository;
+  private final PositionRepository positionRepo;
 
   @Override
   public JoinRequestDtoRes create(JoinRequestDtoReq joinRequestDto) {
@@ -35,6 +35,7 @@ public class JoinServiceImpl implements JoinService {
     newJoinRequest.setUserTarget(this.extractUserOwnerFromProject(newJoinRequest.getProyectoTarget()));
     var joinRequestSaved = joinRepo.save(newJoinRequest);
     this.proyectoRepo.updateRating(joinRequestDto.proyectoTarget());
+    this.positionRepo.deleteByQuantityLessThan(1);
     return joinMapper.joinRequestToDtoReqFromOrigin(joinRequestSaved);
   }
 
@@ -70,11 +71,11 @@ public class JoinServiceImpl implements JoinService {
       if (verifyUserInTokenMatchRequest(joinRequest.get())) {
         this.collaboratorRepo.save(newCollaborator);
         this.deleteById(idRequest);
-        var position  = this.positionRepository
+        var position  = this.positionRepo
                 .findByProyectoRoleAndProyecto_Id(
                         newCollaborator.getProyectoRole(),
                         newCollaborator.getProyecto().getId());
-        position.ifPresent(value -> this.positionRepository.updateQuantity(value.getId()));
+        position.ifPresent(value -> this.positionRepo.updateQuantity(value.getId()));
         return;
       }
       throw new RuntimeException("Solo el destinatario de la solicitud puede responder.");

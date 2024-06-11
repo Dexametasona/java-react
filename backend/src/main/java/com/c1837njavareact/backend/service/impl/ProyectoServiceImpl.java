@@ -91,6 +91,14 @@ public class ProyectoServiceImpl implements ProyectoService {
             .collect(Collectors.toSet());
   }
 
+  @Override
+  public Set<ProyectoDtoRes> getByRole(ProyectoRole role) {
+    var proyectos = proyectoRepo.findByPositions_ProyectoRole(role);
+    return proyectos.stream()
+            .map(proyectoMapper::proyectoToDtoRes)
+            .collect(Collectors.toSet());
+  }
+
   private Set<Collaborator> generateOwner(Proyecto proyecto){
     var ownerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
     var user = userRepo.findByEmail(ownerEmail).orElseThrow(

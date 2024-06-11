@@ -28,4 +28,5 @@ public interface ProyectoRepository extends JpaRepository<Proyecto, Integer> {
 
   Set<Proyecto> findByCollaborators_User_EmailAndCollaborators_ProyectoRole(String email, ProyectoRole proyectoRole);
 
+  Set<Proyecto> findByPositions_ProyectoRole(ProyectoRole proyectoRole);
 }
