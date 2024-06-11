@@ -1,68 +1,89 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { actionGetStack } from "../redux/stacks/stacksActions";
 
-const SelectableForm = ({ onOptionsChange,  showError=false}) => {
+const SelectableForm = ({ onOptionsChange, showError = false }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const stacks = [
-    {
-      id: "1A23C",
-      name: "React",
-      color: "#4C8DFF",
-    },
-    {
-      id: "9A2E7",
-      name: "Spring",
-      color: "#6CB23E",
-    },
-  ];
-  const [options] = useState(["React", "Angular", "Spring boot", "Laravel"]);
+
+  const { stacks } = useSelector((store) => store.stacks);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    onOptionsChange(selectedOptions)
+    dispatch(actionGetStack());
+  }, [dispatch]);
+
+  useEffect(() => {
+    onOptionsChange(selectedOptions);
   }, [selectedOptions, onOptionsChange]);
+
+  // const handleSelectChange = (event) => {
+  //   const selectedValue = event.target.value;
+  //   const selectedOption = stacks.find(stack => stack.name === selectedValue);
+  //   if (selectedOption && !selectedOptions.some(opt => opt.name === selectedOption.name)) {
+  //     setSelectedOptions([...selectedOptions, selectedOption]);
+  //   }
+  // };
 
   const handleSelectChange = (event) => {
     const selectedValue = event.target.value;
-    if (selectedValue && !selectedOptions.includes(selectedValue)) {
-      setSelectedOptions([...selectedOptions, selectedValue]);
+    if (selectedValue && !selectedOptions.includes(parseInt(selectedValue))) {
+      setSelectedOptions([...selectedOptions, parseInt(selectedValue)]);
     }
   };
 
-  const handleRemoveOption = (option) => {
-    setSelectedOptions(selectedOptions.filter((opt) => opt !== option));
+  const handleRemoveOption = (id) => {
+    setSelectedOptions(selectedOptions.filter((optId) => optId !== id));
   };
 
-  const availableOptions = options.filter(
-    (option) => !selectedOptions.includes(option)
+  // const handleRemoveOption = (option) => {
+  //   setSelectedOptions(selectedOptions.filter((opt) => opt !== option));
+  // };
+
+  const availableOptions = stacks.filter(
+    (stack) => !selectedOptions.includes(stack.name)
   );
 
   return (
-    <div className="mt-4 flex flex-col">
+    <div className="my-2 flex flex-col">
       <label
         htmlFor="stacks"
         className="font-semibold font-body text-primary-color"
       >
         Stacks
       </label>
-      <select className="h-10 bg-trasparent border border-highlight-color text-gray-300 text-sm rounded-xl focus:ring-highlight-color focus:border-highlight-color w-full p-2.5 " onChange={handleSelectChange} defaultValue="">
-        <option value="" className="hidden">Seleccione una opción</option>
+      <select
+        className="h-10 bg-trasparent border border-highlight-color text-gray-300 text-sm rounded-xl focus:ring-highlight-color focus:border-highlight-color w-full p-2 "
+        onChange={handleSelectChange}
+        defaultValue=""
+      >
+        <option value="" className="hidden">
+          Seleccione una opción
+        </option>
         {availableOptions.map((option) => (
-          <option key={option} value={option}>
-            {option}
+          <option key={option.id} value={option.id}>
+            {option.name}
           </option>
         ))}
       </select>
       <div>
-        {selectedOptions.map((option) => (
-          <button className="text-highlight-color" key={option} onClick={() => handleRemoveOption(option)}>
-              {option} &times;
-          </button>
-        ))}
+        {selectedOptions.map((id) => {
+          const option = stacks.find((stack) => stack.id === id);
+          return (
+            <button
+              className="text-highlight-color"
+              key={id}
+              onClick={() => handleRemoveOption(id)}
+            >
+              {option.name} &times;
+            </button>
+          );
+        })}
       </div>
       {showError ? (
-            <span className="text-highlight-color text-xs font-semibold">
-              Debe seleccionar stacks
-            </span>
-          ) : null}
+        <span className="text-highlight-color text-xs font-semibold">
+          Debe seleccionar stacks
+        </span>
+      ) : null}
     </div>
   );
 };

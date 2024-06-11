@@ -53,7 +53,6 @@ const Dashboard = () => {
   const handlePageChange = (pageNumber) => {
     if (pageNumber >= 0 && pageNumber < totalPages) {
       setCurrentPage(pageNumber);
-      // Aquí puedes realizar una llamada a la API para obtener los datos de la nueva página si es necesario
     }
   };
   const firstCardRef = useRef(null);

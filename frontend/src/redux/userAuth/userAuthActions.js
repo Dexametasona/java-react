@@ -23,7 +23,7 @@ export const actionLogin = (values) => {
       const config = {
         headers: { Authorization: `Bearer ${data.token}` }
       };
-      dispatch(userToken(data.token))
+      dispatch(userToken(config))
       const response = await actionUserInfo({email:values.email},config);
       if (response != null){
         dispatch(loginSucess(response))

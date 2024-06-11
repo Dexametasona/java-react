@@ -1,5 +1,5 @@
 import endpoints from "../../services/endpoints";
-import { fillProjects, projectsFail, projectsRequest } from "./projectSlice";
+import { addProjects, fillProjects, projectsFail, projectsRequest } from "./projectSlice";
 import axios from "axios";
 
 export const actionGetProjects = (page = 0, size = 9, sort = 'id', direction = 'asc') => {
@@ -15,6 +15,18 @@ export const actionGetProjects = (page = 0, size = 9, sort = 'id', direction = '
         },
       });
       dispatch(fillProjects(data));
+    } catch (error) {
+      console.error(error);
+      dispatch(projectsFail());
+    }
+  };
+};
+export const actionCreateProject = (newProject,config) => {
+  return async (dispatch) => {
+    dispatch(projectsRequest());
+    try {
+      const { data } = await axios.post(endpoints.getAllProjects,newProject,config);
+      dispatch(addProjects(data));
     } catch (error) {
       console.error(error);
       dispatch(projectsFail());
