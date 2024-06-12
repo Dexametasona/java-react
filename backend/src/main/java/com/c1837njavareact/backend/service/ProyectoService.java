@@ -17,5 +17,8 @@ public interface ProyectoService {
   ProyectoDetailedDto updateStatusById(int id, StatusDto status);
 
   Set<ProyectoDetailedDto> getByOwner(EmailDto email);
+
+  Set<ProyectoDetailedDto> getByCollaborator(EmailDto data);
+
   Set<ProyectoDtoRes> getByRole(ProyectoRole role);
 }

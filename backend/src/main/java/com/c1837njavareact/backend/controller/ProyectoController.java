@@ -2,7 +2,6 @@ package com.c1837njavareact.backend.controller;
 
 import com.c1837njavareact.backend.model.dto.EmailDto;
 import com.c1837njavareact.backend.model.dto.ProyectoDtoReq;
-import com.c1837njavareact.backend.model.dto.ProyectoDtoRes;
 import com.c1837njavareact.backend.model.dto.StatusDto;
 import com.c1837njavareact.backend.model.enums.ProyectoRole;
 import com.c1837njavareact.backend.service.ProyectoService;
@@ -48,6 +47,10 @@ public class ProyectoController {
   @PostMapping("/owner")
   public ResponseEntity<?> getByOwner(@Valid @RequestBody EmailDto email){
     return ResponseEntity.status(HttpStatus.OK).body(this.proyectoService.getByOwner(email));
+  }
+  @PostMapping("/collaborator")
+  public ResponseEntity<?> getByCollaborator(@Valid @RequestBody EmailDto email){
+    return ResponseEntity.status(HttpStatus.OK).body(this.proyectoService.getByCollaborator(email));
   }
 
   @PutMapping("/{id}")

@@ -92,6 +92,15 @@ public class ProyectoServiceImpl implements ProyectoService {
   }
 
   @Override
+  public Set<ProyectoDetailedDto> getByCollaborator(EmailDto data) {
+    var proyectos = proyectoRepo.findByCollaborators_User_EmailAndCollaborators_ProyectoRoleNot(
+            data.email(), ProyectoRole.OWNER);
+    return proyectos.stream()
+            .map(proyectoMapper::proyectoToProyectoDetailed)
+            .collect(Collectors.toSet());
+  }
+
+  @Override
   public Set<ProyectoDtoRes> getByRole(ProyectoRole role) {
     var proyectos = proyectoRepo.findByPositions_ProyectoRole(role);
     return proyectos.stream()

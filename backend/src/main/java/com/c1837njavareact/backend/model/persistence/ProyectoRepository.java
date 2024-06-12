@@ -27,6 +27,7 @@ public interface ProyectoRepository extends JpaRepository<Proyecto, Integer> {
   void updateRating(@Param("id") int id);
 
   Set<Proyecto> findByCollaborators_User_EmailAndCollaborators_ProyectoRole(String email, ProyectoRole proyectoRole);
-
+  Set<Proyecto> findByCollaborators_User_EmailAndCollaborators_ProyectoRoleNot(String email, ProyectoRole proyectoRole);
   Set<Proyecto> findByPositions_ProyectoRole(ProyectoRole proyectoRole);
+
 }
