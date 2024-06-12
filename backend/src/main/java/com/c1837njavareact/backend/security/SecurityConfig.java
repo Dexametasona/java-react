@@ -44,6 +44,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.GET, "api/v1/proyecto/role/**").permitAll()
             .requestMatchers(HttpMethod.GET, "api/v1/stack").permitAll()
             .requestMatchers(HttpMethod.GET, "api/v1/tag").permitAll()
+            .requestMatchers(HttpMethod.GET, "api/v1/position/role").permitAll()
             .anyRequest().authenticated())
             .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)

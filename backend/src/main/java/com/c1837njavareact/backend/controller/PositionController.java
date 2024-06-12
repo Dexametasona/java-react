@@ -24,4 +24,9 @@ public class PositionController {
     this.positionService.deleteById(id);
     return ResponseEntity.ok("Posición borrada, id:"+id);
   }
+
+  @GetMapping("/role")
+  public ResponseEntity<?> getRoles(){
+    return ResponseEntity.ok(this.positionService.getRoles());
+  }
 }

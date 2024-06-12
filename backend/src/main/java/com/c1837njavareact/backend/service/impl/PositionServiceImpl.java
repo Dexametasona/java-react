@@ -2,6 +2,8 @@ package com.c1837njavareact.backend.service.impl;
 
 import com.c1837njavareact.backend.model.dto.PositionDtoReq;
 import com.c1837njavareact.backend.model.dto.PositionDtoRes;
+import com.c1837njavareact.backend.model.dto.ProyectoRoleDto;
+import com.c1837njavareact.backend.model.enums.ProyectoRole;
 import com.c1837njavareact.backend.model.mappers.PositionMapper;
 import com.c1837njavareact.backend.model.persistence.PositionRepository;
 import com.c1837njavareact.backend.model.persistence.ProyectoRepository;
@@ -10,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,5 +50,13 @@ public class PositionServiceImpl implements PositionService {
       return;
     }
     throw new EntityNotFoundException("Posición no encontrada, id:"+id);
+  }
+
+  @Override
+  public Set<ProyectoRoleDto> getRoles() {
+    var roles = ProyectoRole.values();
+    return Arrays.stream(roles)
+            .map(role -> new ProyectoRoleDto(role.name()))
+            .collect(Collectors.toSet());
   }
 }
