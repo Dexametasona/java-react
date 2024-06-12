@@ -16,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +50,17 @@ public class JoinServiceImpl implements JoinService {
   @Override
   public List<JoinRequestDtoRes> getJoinRequestByUser(int userId) {
     var joinRequests = this.joinRepo.findByUserTarget_Id(userId);
-    return joinRequests.stream().map(joinMapper::joinRequestToDtoReqFromTarget).toList();
+    return joinRequests.stream()
+            .map(joinMapper::joinRequestToDtoReqFromTarget)
+            .toList();
+  }
+  @Override
+  public Set<JoinRequestDtoRes> getJoinRequestOfCurrentUser(){
+    var currentUser = this.extractUserFromToken();
+    var joinRequests = this.joinRepo.findByUserOrigin(currentUser);
+    return joinRequests.stream()
+            .map(joinMapper::joinRequestToDtoReqFromOrigin)
+            .collect(Collectors.toSet());
   }
 
   @Override
