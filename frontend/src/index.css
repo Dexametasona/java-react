@@ -2,11 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-    @import url('https://fonts.googleapis.com/css2?family=Catamaran:wght@100..900&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Catamaran:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
+@layer base {
     body{
         box-sizing: border-box;
+        background-color: #16191E;
     }
+    .line-clamp {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2; /* Número de líneas antes de truncar */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+      }
+      
 }

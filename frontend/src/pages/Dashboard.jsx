@@ -9,27 +9,12 @@ import { actionGetProjects } from "../redux/projects/projectsActions";
 
 const Dashboard = () => {
   const [filterSelected, setFilterSelected] = useState("all");
-  const stacks = [
-    {
-      id: "1A23C",
-      name: "React",
-      color: "#4C8DFF",
-    },
-    {
-      id: "9A2E7",
-      name: "Spring",
-      color: "#6CB23E",
-    },
-  ];
-  const popular = [1, 2, 3, 4, 5];
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { user } = useSelector((store) => store.userAuth);
   const { projects } = useSelector((store) => store.projects);
   const [currentPage, setCurrentPage] = useState(0);
-
   const totalPages = projects?.totalPages;
   const pageSize = 9;
 
@@ -37,9 +22,9 @@ const Dashboard = () => {
     dispatch(actionGetProjects(currentPage, pageSize));
   }, [currentPage, dispatch]);
 
-  const handleApply = () => {
+  const handleApply = (idProject) => {
     user
-      ? navigate(`/details`)
+      ? navigate(`/details/${idProject}`)
       : Swal.fire({
           allowOutsideClick: false,
           title: `Debe iniciar sesión para continuar`,
@@ -55,6 +40,7 @@ const Dashboard = () => {
       setCurrentPage(pageNumber);
     }
   };
+
   const firstCardRef = useRef(null);
   useEffect(() => {
     if (firstCardRef.current) {
@@ -145,10 +131,10 @@ const Dashboard = () => {
       </div>
       <div className="flex flex-wrap gap-3 my-8">
         {projects.content?.length > 0
-          ? projects.content?.map((item,index) => (
+          ? projects.content?.map((item, index) => (
               <div
-              ref={index === 0 ? firstCardRef : null}
-              tabIndex={index === 0 ? -1 : null}
+                ref={index === 0 ? firstCardRef : null}
+                tabIndex={index === 0 ? -1 : null}
                 key={item.id}
                 className="w-[32%] bg-primary-color rounded-xl mb-2 focus:outline-none focus:border-transparent"
               >
@@ -158,10 +144,11 @@ const Dashboard = () => {
                       {item.name}
                     </h2>
                   </div>
-                  <p className="font-title text-gray-card pt-1 mb-2 text-base">
+                  <p className="font-title text-gray-card pt-1 mb-2 text-base italic truncate">
                     Owner: {item.owner}
                   </p>
-                  <p>{item.description}</p>
+
+                  <p className="font-body text-base h-12 line-clamp">{item.description}</p>
                   <div className="flex flex-row justify-between my-4 h-8 overflow-hidden hover:overflow-y-auto hover:opacity-60">
                     <div className="flex flex-wrap gap-2">
                       {item.stacks.length > 0
@@ -185,7 +172,7 @@ const Dashboard = () => {
                       {item.status}
                     </p>
                     <button
-                      onClick={() => handleApply()}
+                      onClick={() => handleApply(item.id)}
                       className="animate__animated animate__shakeX animate__slow animate__delay-2s font-semibold border-2 border-highlight-color px-4 py-1 rounded-xl text-highlight-color hover:bg-highlight-color hover:text-secondary-color"
                     >
                       Aplicar
@@ -269,11 +256,7 @@ const Dashboard = () => {
         <h2 className="w-full text-3xl font-bold font-title text-secondary-color  text-start border-s-4 border-highlight-color ps-2 my-6">
           Populares
         </h2>
-        <CardsCarousel
-          projects={popular ?? null}
-          stacks={stacks ?? null}
-          handler={handleApply}
-        />
+        <CardsCarousel handler={handleApply} />
       </div>
     </section>
   );
