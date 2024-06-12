@@ -48,4 +48,10 @@ public class JoinRequestController {
     this.joinService.rejectRequest(id);
     return ResponseEntity.ok("Solicitud denegada.");
   }
+
+  @DeleteMapping("/cancel/{id}")
+  public ResponseEntity<String> cancelRequest(@PathVariable int id){
+    this.joinService.cancelRequest(id);
+    return ResponseEntity.ok("Solicitud cancelada cone éxito.");
+  }
 }

@@ -2,7 +2,6 @@ package com.c1837njavareact.backend.service.impl;
 
 import com.c1837njavareact.backend.model.dto.JoinRequestDtoReq;
 import com.c1837njavareact.backend.model.dto.JoinRequestDtoRes;
-import com.c1837njavareact.backend.model.entities.JoinRequest;
 import com.c1837njavareact.backend.model.entities.Proyecto;
 import com.c1837njavareact.backend.model.entities.UserEntity;
 import com.c1837njavareact.backend.model.enums.ProyectoRole;
@@ -80,7 +79,7 @@ public class JoinServiceImpl implements JoinService {
               joinRequest.get(),
               userRepo,
               proyectoRepo);
-      if (verifyUserInTokenMatchRequest(joinRequest.get())) {
+      if (verifyUserInTokenMatch(joinRequest.get().getUserTarget())) {
         this.collaboratorRepo.save(newCollaborator);
         this.deleteById(idRequest);
         var position  = this.positionRepo
@@ -99,7 +98,7 @@ public class JoinServiceImpl implements JoinService {
   public void rejectRequest(int idRequest) {
     var joinRequest = this.joinRepo.findById(idRequest);
     if (joinRequest.isPresent()) {
-      if (verifyUserInTokenMatchRequest(joinRequest.get())) {
+      if (verifyUserInTokenMatch(joinRequest.get().getUserTarget())) {
         this.deleteById(idRequest);
         return;
       }
@@ -107,18 +106,29 @@ public class JoinServiceImpl implements JoinService {
     }
     throw new EntityNotFoundException("Solicitud no encontrada, id:" + idRequest);
   }
-
-  private boolean verifyUserInTokenMatchRequest(JoinRequest request) {
-    var user = extractUserFromToken();
-    return user.getEmail().equals(request.getUserTarget().getEmail());
+  @Override
+  public void cancelRequest(int idRequest) {
+    var joinRequest = this.joinRepo.findById(idRequest);
+    if (joinRequest.isPresent()) {
+      if (verifyUserInTokenMatch(joinRequest.get().getUserOrigin())) {
+        this.deleteById(idRequest);
+        return;
+      }
+      throw new RuntimeException("Solo el remitente puede cancelar la solicitud.");
+    }
+    throw new EntityNotFoundException("Solicitud no encontrada, id:" + idRequest);
   }
 
+
+  private boolean verifyUserInTokenMatch(UserEntity userRequest) {
+    var user = extractUserFromToken();
+    return user.getEmail().equals(userRequest.getEmail());
+  }
   private UserEntity extractUserFromToken() {
     var ownerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
     return userRepo.findByEmail(ownerEmail).orElseThrow(
             () -> new EntityNotFoundException("Usuario no encontrado, email: " + ownerEmail));
   }
-
   private UserEntity extractUserOwnerFromProject(Proyecto proyecto) {
     var collaborator = proyecto.getCollaborators()
             .stream().filter(col -> col.getProyectoRole() == ProyectoRole.OWNER)

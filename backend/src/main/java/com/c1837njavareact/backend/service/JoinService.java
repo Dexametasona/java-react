@@ -18,4 +18,6 @@ public interface JoinService {
   void deleteById(int id);
   void acceptRequest(int idRequest) throws EntityNotFoundException;
   void rejectRequest(int idRequest);
+
+  void cancelRequest(int idRequest);
 }
