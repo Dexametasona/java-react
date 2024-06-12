@@ -16,6 +16,6 @@ public interface ProyectoService {
   void deleteById(int id);
   ProyectoDetailedDto updateStatusById(int id, StatusDto status);
 
-  Set<ProyectoDtoRes> getByOwner(EmailDto email);
+  Set<ProyectoDetailedDto> getByOwner(EmailDto email);
   Set<ProyectoDtoRes> getByRole(ProyectoRole role);
 }
