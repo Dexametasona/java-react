@@ -20,15 +20,15 @@ public class JoinRequestController {
 
   @GetMapping("/proyecto/{id}")
   public ResponseEntity<?> getAllByProyectoId(@PathVariable int id){
-    return ResponseEntity.status(HttpStatus.FOUND).body(this.joinService.getJoinRequestByProyecto(id));
+    return ResponseEntity.status(HttpStatus.OK).body(this.joinService.getJoinRequestByProyecto(id));
   }
   @GetMapping("/from-user/{id}")
   public ResponseEntity<?> getAllFromUserId(@PathVariable int id){
-    return ResponseEntity.status(HttpStatus.FOUND).body(this.joinService.getJoinRequestByUser(id));
+    return ResponseEntity.status(HttpStatus.OK).body(this.joinService.getJoinRequestByUser(id));
   }
   @GetMapping("/to-user/{id}")
   public ResponseEntity<?> getAllToUserId(@PathVariable int id){
-    return ResponseEntity.status(HttpStatus.FOUND).body(this.joinService.getJoinRequestByProyecto(id));
+    return ResponseEntity.status(HttpStatus.OK).body(this.joinService.getJoinRequestByProyecto(id));
   }
   @GetMapping("/accept/{id}")
   public ResponseEntity<String> acceptRequest(@PathVariable int id){

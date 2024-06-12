@@ -47,7 +47,7 @@ public class ProyectoController {
 
   @PostMapping("/owner")
   public ResponseEntity<?> getByOwner(@Valid @RequestBody EmailDto email){
-    return ResponseEntity.status(HttpStatus.FOUND).body(this.proyectoService.getByOwner(email));
+    return ResponseEntity.status(HttpStatus.OK).body(this.proyectoService.getByOwner(email));
   }
 
   @PutMapping("/{id}")
@@ -57,7 +57,7 @@ public class ProyectoController {
 
   @PatchMapping("/{id}")
   public ResponseEntity<?> updateStatusById(@PathVariable int id, @Valid @RequestBody StatusDto status){
-    return ResponseEntity.status(HttpStatus.ACCEPTED).body(this.proyectoService.updateStatusById(id, status));
+    return ResponseEntity.status(HttpStatus.OK).body(this.proyectoService.updateStatusById(id, status));
   }
 
   @DeleteMapping("/{id}")
