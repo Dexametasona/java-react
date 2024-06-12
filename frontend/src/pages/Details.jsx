@@ -1,41 +1,70 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import banner from "../assets/imgDetails.svg";
 import imgCard from "../assets/imgCard.jpeg";
 import FormRequest from "../components/FormRequest";
 import CardsCarousel from "../components/CardsCarousel";
 import FormSearchRol from "../components/FormSearchRol";
+import { Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { actionDetailsProject } from "../redux/projects/projectsActions";
+import Charging from "../components/Charging";
+import { format } from "date-fns";
+
 const Details = () => {
   //solicitud -> si el id del dueño del proyecto es diferente del userAuth y no hace parte de colaboradore
   //infoProyecto -> si el id del dueño del proyecto es diferente del userAuth y hace parte de colaboradore
   //Edicion -> si el id del dueño del proyecto es igual al userAuth
+  const { idProject } = useParams();
+  const dispatch = useDispatch();
 
-  const stacks = [
-    {
-      id: "1A23C",
-      name: "React",
-      color: "#4C8DFF",
-    },
-    {
-      id: "9A2E7",
-      name: "Spring",
-      color: "#6CB23E",
-    },
-  ];
+  const roles = [1, 2];
+  const { isAuth, user } = useSelector((store) => store.userAuth);
+  const { detailsProject } = useSelector((store) => store.projects);
+  const [viewType, setViewType] = useState(null);
 
-  const roles = [1,2]
+  console.log(detailsProject);
+  useEffect(() => {
+    dispatch(actionDetailsProject(idProject, isAuth));
+  }, [dispatch]);
 
-  return (
+  useEffect(() => {
+    if (detailsProject) {
+      const owner = detailsProject.collaborators?.find(
+        (collaborator) => collaborator.proyectoRole === "OWNER"
+      );
+
+      if (owner.userId === user.id) {
+        console.log("edition");
+        setViewType("edition");
+      } else {
+        const collaborator = detailsProject.collaborators?.find(
+          (collaborator) =>
+            (collaborator.userId === user.id) &
+            (collaborator.proyectoRole != "OWNER")
+        );
+        if (collaborator) {
+          console.log("collaborator", collaborator);
+          setViewType("collaborator");
+        } else {
+          console.log("request");
+          setViewType("request");
+        }
+      }
+    }
+  }, [detailsProject]);
+
+  return detailsProject ? (
     <div className="mt-12">
       <div className="mt-4 flex flex-row">
         <div className="flex flex-col w-full">
           <p className="ms-3 font-title text-gray-card mt-2 text-base text-start">
-            Porfolio
+            {detailsProject.tag.name}
           </p>
           <h2 className="w-full text-3xl font-bold font-title text-secondary-color  text-start border-s-4 border-highlight-color ps-2 my-2">
-            Productos Gran hermano
+            {detailsProject.name}
           </h2>
           <p className="ms-3 font-title text-gray-card mb-2 text-base">
-            Creado: 17/08/2024
+            Creado: {format(new Date(detailsProject.createdAt), "dd/MM/yyyy")}
           </p>
         </div>
         <img className="w-24 object-cover" src={banner} alt="banner" />
@@ -46,21 +75,16 @@ const Details = () => {
           <h2 className="font-title text-primary-color text-2xl text-start font-bold mb-4">
             Descripción
           </h2>
-          <p>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo
-            delectus autem repudiandae tenetur corrupti amet architecto dolorem
-            soluta adipisci perspiciatis possimus, vel blanditiis excepturi est
-            cupiditate quos explicabo veniam obcaecati.
-          </p>
+          <p>{detailsProject.description}</p>
           <h2 className="font-title text-primary-color text-2xl text-start font-bold my-4">
             Requerimientos
           </h2>
           <div>
-            {stacks.length > 0
-              ? stacks?.map((item) => (
+            {detailsProject.stacks.length > 0
+              ? detailsProject.stacks?.map((item) => (
                   <div key={item.id} className="flex items-center">
                     <svg
-                    className="w-6 h-6 fill-check mr-1"
+                      className="w-6 h-6 fill-check mr-1"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
                     >
@@ -72,38 +96,135 @@ const Details = () => {
               : null}
           </div>
         </div>
-        {/* <FormRequest /> */}
-        <FormSearchRol/>
+        {viewType === "edition" ? (
+          <FormSearchRol />
+        ) : viewType === "request" ? (
+          <FormRequest />
+        ) : (
+          <div className="w-1/3 bg-secondary-color p-4 rounded-xl h-48">
+            <h2 className="font-title text-highlight-color text-2xl text-center font-bold mb-4">
+              Canal de Comunicación
+            </h2>
+            <div className="flex flex-col justify-center items-center">
+              <p className="mb-2 w-full">
+                Para contactar al dueño del proyecto y a sus colaboradores:
+              </p>
+              <Link
+                to={detailsProject.channel}
+                className="bg-highlight-color w-1/2 p-2 rounded-lg flex justify-center mt-2"
+              >
+                <p className="text-secondary-color font-bold italic text-center">
+                  Ingresa aqui
+                </p>
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
       <div className="">
         <h2 className="w-full text-3xl font-bold font-title text-secondary-color  text-start border-s-4 border-highlight-color ps-2  mt-10 mb-6">
-          Estamos buscando
+          {viewType === "collaborator"
+            ? "Colaboradores"
+            : viewType === "edition"
+            ? "Estas Buscando"
+            : "Estamos Buscando"}
         </h2>
         <div className="flex flex-wrap">
-        {roles?.length > 0 ? roles?.map((item) => (
-              <div
-                key={item}
-                className="w-1/3 bg-primary-color rounded-xl p-2"
-              >
+          {viewType === "collaborator" ? (
+            detailsProject.collaborators.map((item) => {
+              item.proyectoRole != "OWNER" && item.userId != user.id ? (
+                <div
+                  key={item.userId}
+                  className="w-1/3 bg-primary-color rounded-xl p-2"
+                >
+                  <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
+                    <h2 className="font-body font-bold text-lg text-highlight-color mb-2">
+                      {item.proyectoRole}
+                    </h2>
+                    <p className="font-body text-sm">{item.userName}</p>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-secondary-color ms-2">
+                  Este proyecto no tiene otros colaboradores en este momento
+                </p>
+              );
+            })
+          ) : // aqui debo poner la informacion de las positions
+          roles?.length > 0 ? (
+            roles?.map((item) => (
+              <div key={item} className="w-1/3 bg-primary-color rounded-xl p-2">
                 <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
                   <h2 className="font-body font-bold text-lg text-highlight-color mb-2">
                     Frontend developer (2)
-                  </h2>            
+                  </h2>
                   <p className="font-body text-sm">
                     Consectetur adipisicing esse commodo mollit laboris culpa et
                     officia quis dolore velit duis ut ullamco
                   </p>
                 </div>
-
               </div>
-            )) : (
-          <p className="text-secondary-color ms-2">
-            No tienes roles a buscar en este momento
-          </p>
-        )}
+            ))
+          ) : (
+            <p className="text-secondary-color ms-2">
+              {viewType === "edition"
+                ? "No tienes roles a buscar en este momento"
+                : "No estamos buscando colaboradores en este momento"}
+            </p>
+          )}
+          {/* {roles?.length > 0 ? (
+            roles?.map((item) => (
+              <div key={item} className="w-1/3 bg-primary-color rounded-xl p-2">
+                <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
+                  <h2 className="font-body font-bold text-lg text-highlight-color mb-2">
+                    Frontend developer (2)
+                  </h2>
+                  <p className="font-body text-sm">
+                    Consectetur adipisicing esse commodo mollit laboris culpa et
+                    officia quis dolore velit duis ut ullamco
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-secondary-color ms-2">
+              No tienes roles a buscar en este momento
+            </p>
+          )} */}
         </div>
       </div>
+      {viewType === "edition" ? (
+        <div className="">
+          <h2 className="w-full text-3xl font-bold font-title text-secondary-color  text-start border-s-4 border-highlight-color ps-2  mt-10 mb-6">
+            Colaboradores
+          </h2>
+          <div className="flex flex-wrap">
+            {detailsProject.collaborators.map((colaborator) => (
+              
+              colaborator.proyectoRole != "OWNER" && colaborator.userId != user.id ? (
+                <div
+                  key={colaborator.userId}
+                  className="w-1/3 bg-primary-color rounded-xl p-2"
+                >
+                  <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
+                    <h2 className="font-body font-bold text-lg text-highlight-color mb-2">
+                      {colaborator.proyectoRole}
+                    </h2>
+                    <p className="font-body text-sm">{colaborator.userName}</p>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-secondary-color ms-2">
+                  Aun no tienes colaboradores en este proyecto
+                </p>
+              )
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
+  ) : (
+    <Charging />
   );
 };
 

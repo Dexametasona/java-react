@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useDispatch, useSelector } from "react-redux";
+import { actionGetPopularProjects } from "../redux/projects/projectsActions";
 
-const CardsCarousel = ({ projects, stacks, cancel, handler}) => {
+const CardsCarousel = ({ cancel, handler }) => {
+  const { popular } = useSelector((store) => store.projects);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(actionGetPopularProjects());
+  }, [dispatch]);
+
   const settings = {
     dots: true,
     infinite: true,
@@ -12,69 +21,71 @@ const CardsCarousel = ({ projects, stacks, cancel, handler}) => {
     slidesToScroll: 3,
   };
 
-  return (
+  return popular.length > 0 ? (
     <div className="slider-container">
       <Slider {...settings} className="flex gap-3">
-        {projects.length > 0
-          ? projects?.map((item) => (
+        {popular.length > 0
+          ? popular.map((item) => (
               <div
-                key={item}
+                key={item.id}
                 className="w-[20%] bg-primary-color rounded-xl p-2"
               >
                 <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
-                  <h2 className="font-body font-bold text-xl text-primary-color">
-                    Dexametasona Product
-                  </h2>
+                <div className="h-14 overflow-hidden flex items-center">
+                    <h2 className="font-body font-bold text-xl text-primary-color">
+                      {item.name}
+                    </h2>
+                  </div>
                   <p className="font-title text-gray-card my-2 text-base">
-                    Owner: Jose Perez
+                    Owner: {item.owner}
                   </p>
-                  <p>
-                    Consectetur adipisicing esse commodo mollit laboris culpa et
-                    officia quis dolore velit duis ut ullamco{" "}
-                  </p>
-                  <div className="flex flex-row justify-between my-6">
+                  <p className="font-body text-base h-12 line-clamp">{item.description}</p>
+                  <div className="h-10 flex flex-row justify-between my-6">
+                    
                     <div className="flex gap-2">
-                      {stacks.length > 0
-                        ? stacks?.map((item) => (
-                            <div key={item.id} className="flex items-center">
+                      {item.stacks?.length > 0
+                        ? item.stacks?.map((stack) => (
+                            <div key={`stack ${stack.id}`} className="flex items-center">
                               <div
                                 className={`w-2 h-2 mx-2 rounded-full`}
                                 style={{
-                                  backgroundColor: item.color,
-                                  borderColor: item.color,
+                                  backgroundColor: stack.color,
+                                  borderColor: stack.color,
                                 }}
                               ></div>
-                              <p>{item.name}</p>
+                              <p>{stack.name}</p>
                             </div>
                           ))
                         : null}
                     </div>
-                    {cancel ? (
+                  </div>
+                  <div>
+                  {cancel ? (
                       <button
                         onClick={handler}
                         className="font-semibold border-2 border-highlight-color px-4 py-1 rounded-xl text-highlight-color hover:bg-highlight-color hover:text-secondary-color"
                       >
-                        Cancel
+                        Cancelar
                       </button>
                     ) : (
                       <button
                         onClick={handler}
                         className="font-semibold border-2 border-highlight-color px-4 py-1 rounded-xl text-highlight-color hover:bg-highlight-color hover:text-secondary-color"
                       >
-                        Apply
+                        Aplicar
                       </button>
                     )}
                   </div>
                 </div>
                 <h4 className="m-2 text-secondary-color font-body font-bold">
-                  Landing Page
+                  {item.tag.name}
                 </h4>
               </div>
             ))
           : null}
       </Slider>
     </div>
-  );
+  ) : null;
 };
 
 export default CardsCarousel;

@@ -6,6 +6,7 @@ const endpoints ={
     getStacks: `${URL_BASE}stack`,
     getTags: `${URL_BASE}tag`,
     getAllProjects: `${URL_BASE}proyecto`,
+    getUserProjects: `${URL_BASE}proyecto/owner`,
     getProjectsById: (id) => `${URL_BASE}proyecto/${id}`
 }
 

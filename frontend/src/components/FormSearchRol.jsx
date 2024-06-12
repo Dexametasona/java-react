@@ -29,14 +29,14 @@ const FormSearchRol = () => {
             </div>
             <div className="mb-4">
               <label
-                htmlFor="name"
+                htmlFor="rol"
                 className="text-primary-color font-semibold font-body text-base ms-1"
               >
                 Rol
               </label>
               <input
                 type="text"
-                id="name"
+                id="rol"
                 className="h-8 bg-trasparent border border-highlight-color text-black-text text-sm rounded-lg focus:ring-highlight-color focus:border-highlight-color w-full p-2.5 "
                 placeholder="Ingrese un nombre"
                 // {...formik.getFieldProps("name")}
