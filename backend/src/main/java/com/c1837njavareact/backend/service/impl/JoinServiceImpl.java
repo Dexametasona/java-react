@@ -10,6 +10,7 @@ import com.c1837njavareact.backend.model.mappers.JoinMapper;
 import com.c1837njavareact.backend.model.persistence.*;
 import com.c1837njavareact.backend.service.JoinService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class JoinServiceImpl implements JoinService {
   private final CollaboratorRepository collaboratorRepo;
   private final CollaboratorMapper collaboratorMapper;
   private final PositionRepository positionRepo;
-
+  @Transactional
   @Override
   public JoinRequestDtoRes create(JoinRequestDtoReq joinRequestDto) {
     var newJoinRequest = joinMapper.dtoReqToJoinRequest(joinRequestDto, proyectoRepo);
