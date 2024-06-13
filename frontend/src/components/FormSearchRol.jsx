@@ -155,7 +155,7 @@ const FormSearchRol = ({ idProject }) => {
             type="submit"
             className="font-body sm:w-1/2 w-full mb-2 md:text-base text-sm bg-highlight-color hover:bg-primary-color hover:border border-primary-color font-semibold rounded-xl px-5 py-2.5 text-center text-secondary-color"
           >
-            Solicitar unirse
+            Añadir rol
           </button>
         </div>
       </form>
