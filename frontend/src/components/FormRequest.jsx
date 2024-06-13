@@ -35,7 +35,6 @@ const FormRequest = ({ roles = [], idProject, request = false }) => {
     onSubmit: async (values) => {
       if (idProject) {
         values.proyectoTarget = parseInt(idProject);
-        console.log(values);
         dispatch(actionCreateRequest(values,isAuth))
       }
     },

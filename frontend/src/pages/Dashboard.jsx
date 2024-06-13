@@ -6,7 +6,6 @@ import Swal from "sweetalert2";
 import { showLogin } from "../redux/userAuth/userAuthSlice";
 import CardsCarousel from "../components/CardsCarousel";
 import { actionGetFilteredProjects, actionGetProjects } from "../redux/projects/projectsActions";
-import Charging from "../components/Charging";
 
 const Dashboard = () => {
   const [filterSelected, setFilterSelected] = useState("all");

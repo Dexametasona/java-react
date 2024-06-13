@@ -15,11 +15,14 @@ import {
   requestsFail,
   resetSuccessRequests,
 } from "../redux/request/requestsSlice";
+import { Link, useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const dispatch = useDispatch();
   const { userProjects, showForm } = useSelector((store) => store.projects);
   const { user, isAuth } = useSelector((store) => store.userAuth);
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(actionGetUserProject(user.email, isAuth));
@@ -63,9 +66,9 @@ const Profile = () => {
               <div className="w-2/5 bg-primary-color rounded-xl p-2">
                 <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
                   <div className="flex items-center justify-between">
-                    <h2 className="font-body font-bold text-xl text-primary-color">
+                    <button onClick={()=>navigate(`/details/${item.id}`)} className="font-body font-bold text-xl text-primary-color">
                       {item.name}
-                    </h2>
+                    </button>
                     <div className="ms-2 flex">
                       <button className="bg-transparent w-8 h-8 hover:opacity-60">
                         <svg
@@ -126,18 +129,18 @@ const Profile = () => {
                     Solicitudes
                   </h2>
                   <div
-                    className={`flex justify-between mb-2 pb-1 ${
+                    className={`w-full flex justify-between mb-2 pb-1 ${
                       item.joinRequests?.length > 0 ? "h-36" : "h-10"
-                    } overflow-y-auto`}
+                    } overflow-y-auto `}
                   >
-                    <div className="flex flex-col gap-2">
+                    <div className="w-full flex flex-col gap-2 my-1">
                       {item.joinRequests?.length > 0 ? (
                         item.joinRequests?.map((request) => (
                           <div
                             key={`request-${request.id}`}
-                            className="w-full flex items-start shadow-lg p-2 m-1rounded-xl mb-4"
+                            className="w-[95%] flex items-center shadow-lg p-2 m-1 rounded-xl mb-4"
                           >
-                            <div className="w-1/3 ">
+                            <div className="w-2/5 ">
                               <h4 className="font-title font-bold">
                                 {request.proyectoRole}
                               </h4>
@@ -171,7 +174,7 @@ const Profile = () => {
                                 </button>
                               </div>
                             </div>
-                            <div className="w-2/3">
+                            <div className="w-3/5 ps-2">
                               <p className="font-body text-sm text-truncate">
                                 {request.message}
                               </p>

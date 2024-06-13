@@ -5,6 +5,7 @@ const initialProjects = {
   userProjects:[],
   userRequests:[],
   popular:[],
+  positions:[],
   detailsProject:null,
   isSuccessProjects: false,
   isLoadingProjects: false,
@@ -71,11 +72,23 @@ const projectsSlice = createSlice({
       state.userRequests = action.payload;
       state.isLoadingProjects = false;
       state.errorProjects = null;
-    },  
+    }, 
+    fillPositions: (state, action) => {
+      state.positions = action.payload;
+      state.isLoadingProjects = false;
+      state.errorProjects = null;
+    }, 
+    addPositions: (state, action) => {
+      state.positions.push(action.payload);
+      state.isLoadingProjects = false;
+      state.isSuccessProjects = true;
+    }, 
   },
 });
 
 export const {
+  fillPositions,
+  addPositions,
   fillUserRequest,
   detailsProject,
   fillUserProjects,

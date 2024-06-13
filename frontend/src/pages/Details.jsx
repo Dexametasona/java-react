@@ -5,7 +5,7 @@ import FormRequest from "../components/FormRequest";
 import FormSearchRol from "../components/FormSearchRol";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { actionDetailsProject } from "../redux/projects/projectsActions";
+import { actionDetailsProject, actionGetPositionProject } from "../redux/projects/projectsActions";
 import Charging from "../components/Charging";
 import { format } from "date-fns";
 
@@ -17,12 +17,17 @@ const Details = () => {
   const dispatch = useDispatch();
 
   const { isAuth, user } = useSelector((store) => store.userAuth);
-  const { detailsProject } = useSelector((store) => store.projects);
+  const { detailsProject, positions } = useSelector((store) => store.projects);
   const [viewType, setViewType] = useState(null);
+  const [hasOtherCollaborators, setHasOtherCollaborators] = useState(0);
 
   useEffect(() => {
     dispatch(actionDetailsProject(idProject, isAuth));
-  }, [dispatch]);
+  }, [dispatch,idProject]);
+
+  useEffect(() => {
+    dispatch(actionGetPositionProject(idProject,isAuth));
+  }, [dispatch,idProject]);
 
   useEffect(() => {
     if (detailsProject) {
@@ -31,7 +36,6 @@ const Details = () => {
       );
 
       if (owner.userId === user.id) {
-        console.log("edition");
         setViewType("edition");
       } else {
         const collaborator = detailsProject.collaborators?.find(
@@ -40,17 +44,20 @@ const Details = () => {
             (collaborator.proyectoRole != "OWNER")
         );
         if (collaborator) {
-          console.log("collaborator", collaborator);
           setViewType("collaborator");
         } else {
-          console.log("request");
           setViewType("request");
         }
       }
+
+      setHasOtherCollaborators(
+        detailsProject.collaborators.some(
+          (item) => item.proyectoRole !== "OWNER" && item.userId !== user.id
+        )
+      );
     }
   }, [detailsProject]);
 
-  console.log("detailsProject", detailsProject)
   return detailsProject ? (
     <div className="mt-12">
       <div className="mt-4 flex flex-row">
@@ -69,7 +76,7 @@ const Details = () => {
       </div>
       <div className="flex justify-between mt-10">
         <div className="w-3/5 bg-secondary-color p-4 rounded-xl">
-          {/* <img className="w-full h-32 mb-2 object-cover rounded-xl" src={imgCard} alt="card" /> */}
+          <img className="w-full h-32 mb-2 object-cover" src={imgCard} alt="card" />
           <h2 className="font-title text-primary-color text-2xl text-start font-bold mb-4">
             Descripción
           </h2>
@@ -95,9 +102,15 @@ const Details = () => {
           </div>
         </div>
         {viewType === "edition" ? (
-          <FormSearchRol />
+          <FormSearchRol idProject={idProject} />
         ) : viewType === "request" ? (
-          <FormRequest roles={detailsProject.positions} idProject={idProject} request={detailsProject.joinRequests.some(request => request.user === user.email )         } />
+          <FormRequest
+            roles={detailsProject.positions}
+            idProject={idProject}
+            request={detailsProject.joinRequests.some(
+              (request) => request.user === user.email
+            )}
+          />
         ) : (
           <div className="w-1/3 bg-secondary-color p-4 rounded-xl h-48">
             <h2 className="font-title text-highlight-color text-2xl text-center font-bold mb-4">
@@ -122,43 +135,45 @@ const Details = () => {
       <div className="">
         <h2 className="w-full text-3xl font-bold font-title text-secondary-color  text-start border-s-4 border-highlight-color ps-2  mt-10 mb-6">
           {viewType === "collaborator"
-            ? "Colaboradores"
+            ? "Otros Colaboradores"
             : viewType === "edition"
             ? "Estas Buscando"
             : "Estamos Buscando"}
         </h2>
         <div className="flex flex-wrap">
           {viewType === "collaborator" ? (
-            detailsProject.collaborators.map((item) => {
-              item.proyectoRole != "OWNER" && item.userId != user.id ? (
-                <div
-                  key={item.userId}
-                  className="w-1/3 bg-primary-color rounded-xl p-2"
-                >
-                  <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
-                    <h2 className="font-body font-bold text-lg text-highlight-color mb-2">
-                      {item.proyectoRole}
-                    </h2>
-                    <p className="font-body text-sm">{item.userName}</p>
+            hasOtherCollaborators ? (
+              detailsProject.collaborators.map((item) =>
+                item.proyectoRole != "OWNER" && item.userId != user.id ? (
+                  <div
+                    key={item.userId}
+                    className="w-1/3 bg-primary-color rounded-xl p-2"
+                  >
+                    <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
+                      <h2 className="font-body font-bold text-lg text-highlight-color mb-2">
+                        {item.proyectoRole}
+                      </h2>
+                      <p className="font-body text-sm">{item.userName}</p>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <p className="text-secondary-color ms-2">
-                  Este proyecto no tiene otros colaboradores en este momento
-                </p>
-              );
-            })
-          ) : // aqui debo poner la informacion de las positions
-          detailsProject.positions?.length > 0 ? (
+                ) : null
+              )
+            ) : (
+              <p className="text-secondary-color ms-2">
+                Este proyecto no tiene otros colaboradores en este momento
+              </p>
+            )
+          ) : positions?.length > 0 ? (
             detailsProject.positions?.map((role) => (
-              <div key={`role${role.id}`} className="w-1/3 bg-primary-color rounded-xl p-2">
+              <div
+                key={`role${role.id}`}
+                className="w-1/3 bg-primary-color rounded-xl p-2"
+              >
                 <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
                   <h2 className="font-body font-bold text-lg text-highlight-color mb-2">
                     {role.proyectoRole}({role.quantity})
                   </h2>
-                  <p className="font-body text-sm">
-                    {role.description}
-                  </p>
+                  <p className="font-body text-sm">{role.description}</p>
                 </div>
               </div>
             ))
@@ -177,26 +192,29 @@ const Details = () => {
             Colaboradores
           </h2>
           <div className="flex flex-wrap">
-            {detailsProject.collaborators.map((colaborator) => (
-              
-              colaborator.proyectoRole != "OWNER" && colaborator.userId != user.id ? (
-                <div
-                  key={`collaborator-${colaborator.userId}`}
-                  className="w-1/3 bg-primary-color rounded-xl p-2"
-                >
-                  <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
-                    <h2 className="font-body font-bold text-lg text-highlight-color mb-2">
-                      {colaborator.proyectoRole}
-                    </h2>
-                    <p className="font-body text-sm">{colaborator.userName}</p>
+            {hasOtherCollaborators ? (
+              detailsProject.collaborators.map((colaborator) =>
+                colaborator.proyectoRole != "OWNER" ? (
+                  <div
+                    key={`collaborator-${colaborator.userId}`}
+                    className="w-1/3 bg-primary-color rounded-xl p-2"
+                  >
+                    <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
+                      <h2 className="font-body font-bold text-lg text-highlight-color mb-2">
+                        {colaborator.proyectoRole}
+                      </h2>
+                      <p className="font-body text-sm">
+                        {colaborator.userName}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <p className="text-secondary-color ms-2">
-                  Aun no tienes colaboradores en este proyecto
-                </p>
+                ) : null
               )
-            ))}
+            ) : (
+              <p className="text-secondary-color ms-2">
+                Este proyecto no tiene otros colaboradores en este momento
+              </p>
+            )}
           </div>
         </div>
       ) : null}

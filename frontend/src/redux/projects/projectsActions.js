@@ -1,5 +1,5 @@
 import endpoints from "../../services/endpoints";
-import { addProjects, detailsProject, fillPopular, fillProjects, fillUserProjects, fillUserRequest, projectsFail, projectsRequest } from "./projectSlice";
+import { addPositions, addProjects, detailsProject, fillPopular, fillPositions, fillProjects, fillUserProjects, fillUserRequest, projectsFail, projectsRequest } from "./projectSlice";
 import axios from "axios";
 
 export const actionGetProjects = (page = 0, size = 9, sort = 'id', direction = 'asc') => {
@@ -108,3 +108,30 @@ export const actionGetRequestUser= (config) => {
     }
   };
 };
+
+export const actionCreatePosition= (newPosition,config) => {
+  return async (dispatch) => {
+    dispatch(projectsRequest());
+    try {
+      const { data } = await axios.post(endpoints.postPosition,newPosition,config);
+      dispatch(addPositions(data));
+    } catch (error) {
+      console.error(error);
+      dispatch(projectsFail());
+    }
+  };
+};
+
+export const actionGetPositionProject= (idProject,config) => {
+  return async (dispatch) => {
+    dispatch(projectsRequest());
+    try {
+      const { data } = await axios.get(endpoints.getRequestByProject(idProject),config);
+      dispatch(fillPositions(data));
+    } catch (error) {
+      console.error(error);
+      dispatch(projectsFail());
+    }
+  };
+};
+
