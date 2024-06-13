@@ -4,14 +4,18 @@ import { actionGetRequestUser } from "../redux/projects/projectsActions";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { actionCancelRequest, actionFillRequestUser } from "../redux/request/requestsActions";
+import Charging from "./Charging";
+import { requestsFail, resetSuccessRequests } from "../redux/request/requestsSlice";
+import Swal from "sweetalert2";
 
-const CarouselRequest = ({ handler }) => {
+const CarouselRequest = () => {
   const { isAuth } = useSelector((store) => store.userAuth);
-  const { userRequests } = useSelector((store) => store.projects);
+  const { requests,errorRequests, isLoadingRequests, isSuccessRequests} = useSelector((store) => store.requests);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(actionGetRequestUser(isAuth));
+    dispatch(actionFillRequestUser(isAuth));
   }, [dispatch]);
 
   const settings = {
@@ -22,11 +26,55 @@ const CarouselRequest = ({ handler }) => {
     slidesToScroll: 1,
   };
 
-  return userRequests?.length > 0 ? (
+  const handler = (id) => {
+    Swal.fire({
+      allowOutsideClick: false,
+      title: "¿Esta por cancelar su solicitud?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Continuar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(actionCancelRequest(id, isAuth));
+      }
+    });
+  };
+  if (isLoadingRequests)
+    return (
+      <Charging/>
+    );
+
+  if (errorRequests) {
+    Swal.fire({
+      position: "top-end",
+      allowOutsideClick: false,
+      title: "Error al cancelar solcitud",
+      icon: "error",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(requestsFail(null));
+      }
+    });
+  }
+
+  if (isSuccessRequests) {
+    Swal.fire({
+      position: "top-end",
+      allowOutsideClick: false,
+      text: "Solicitud cancelada",
+      icon: "success",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(resetSuccessRequests());
+      }
+    });
+  }
+
+  return requests?.length > 0 ? (
     <div className="slider-container">
-      {userRequests?.length > 1 ? (
+      {requests?.length > 1 ? (
         <Slider {...settings} className="flex gap-3">
-          {userRequests.map((item) => (
+          {requests.map((item) => (
             <div
               key={`${item.id}`}
               className="w-[30%] bg-primary-color rounded-xl p-2"
@@ -37,28 +85,27 @@ const CarouselRequest = ({ handler }) => {
                     {item.proyectoTarget}
                   </h2>
                 </div>
-              </div>
-              <p className="font-title text-gray-card my-2 text-base">
-                Destinatario: {item.user}
-              </p>
-              <p className="font-body text-base h-12 line-clamp">
-                {item.message}
-              </p>
-              <p className="font-body my-2 text-base ">{item.proyectoRole}</p>
-
-              <div>
-                <button
-                  onClick={handler}
-                  className="font-semibold border-2 border-highlight-color px-4 py-1 rounded-xl text-highlight-color hover:bg-highlight-color hover:text-secondary-color"
-                >
-                  Cancelar
-                </button>
+                <p className="font-title text-gray-card my-2 text-base">
+                  Destinatario: {item.user}
+                </p>
+                <p className="font-body text-base h-12 line-clamp">
+                  {item.message}
+                </p>
+                <p className="font-body my-2 text-base ">{item.proyectoRole}</p>
+                <div>
+                  <button
+                    onClick={() => handler(item.id)}
+                    className="font-semibold border-2 border-highlight-color px-4 py-1 rounded-xl text-highlight-color hover:bg-highlight-color hover:text-secondary-color"
+                  >
+                    Cancelar
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </Slider>
       ) : (
-        userRequests.map((item) => (
+        requests.map((item) => (
           <div
             key={`${item.id}`}
             className="w-[35%] bg-primary-color rounded-xl p-2"
@@ -75,7 +122,9 @@ const CarouselRequest = ({ handler }) => {
               <p className="font-body text-base h-12 line-clamp">
                 {item.message}
               </p>
-              <p className="font-body my-4 text-base ">Aplico al rol: {item.proyectoRole}</p>
+              <p className="font-body my-4 text-base ">
+                Aplico al rol: {item.proyectoRole}
+              </p>
 
               <div>
                 <button

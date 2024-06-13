@@ -8,27 +8,28 @@ import {
   actionGetUserProject,
 } from "../redux/projects/projectsActions";
 import CarouselRequest from "../components/CarouselRequest";
+import Swal from "sweetalert2";
+import { actionCancelRequest } from "../redux/request/requestsActions";
+import Charging from "../components/Charging";
+import {
+  requestsFail,
+  resetSuccessRequests,
+} from "../redux/request/requestsSlice";
 
 const Profile = () => {
   const dispatch = useDispatch();
-  const { userProjects, showForm, userRequests } = useSelector(
-    (store) => store.projects
-  );
-
+  const { userProjects, showForm } = useSelector((store) => store.projects);
   const { user, isAuth } = useSelector((store) => store.userAuth);
 
   useEffect(() => {
     dispatch(actionGetUserProject(user.email, isAuth));
   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(actionGetRequestUser(isAuth));
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(actionGetRequestUser(isAuth));
+  // }, [dispatch]);
 
-  const handler = () => {
-    console.log("click cancel");
-  };
-  
+
   const handlerDeleteProject = () => {
     console.log("click borrar proyecto");
   };
@@ -76,7 +77,10 @@ const Profile = () => {
                           <path d="M5 21h14c1.103 0 2-.897 2-2v-8.668l-2 2V19H8.158c-.026 0-.053.01-.079.01-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2z"></path>
                         </svg>
                       </button>
-                      <button onClick={()=> handlerDeleteProject() } className="bg-transparent w-8 h-8 hover:opacity-60">
+                      <button
+                        onClick={() => handlerDeleteProject()}
+                        className="bg-transparent w-8 h-8 hover:opacity-60"
+                      >
                         <svg
                           className="w-6 h-6 fill-highlight-color"
                           xmlns="http://www.w3.org/2000/svg"
@@ -141,7 +145,10 @@ const Profile = () => {
                                 {request.user}
                               </p>
                               <div className="flex gap-3 ms-2 mb-2">
-                                <button className="bg-highlight-color w-8 h-8 p-1 rounded-full fill-secondary-color">
+                                <button
+                                  onClick={() => console.log("aceptar")}
+                                  className="bg-highlight-color w-8 h-8 p-1 rounded-full fill-secondary-color"
+                                >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
@@ -149,7 +156,10 @@ const Profile = () => {
                                     <path d="m10 15.586-3.293-3.293-1.414 1.414L10 18.414l9.707-9.707-1.414-1.414z"></path>
                                   </svg>
                                 </button>
-                                <button className="bg-highlight-color w-8 h-8 p-1 rounded-full fill-secondary-color">
+                                <button
+                                  onClick={() => console.log("rechazar")}
+                                  className="bg-highlight-color w-8 h-8 p-1 rounded-full fill-secondary-color"
+                                >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="24"
@@ -189,7 +199,7 @@ const Profile = () => {
         <h2 className="w-full text-3xl font-bold font-title text-secondary-color  text-start border-s-4 border-highlight-color ps-2 my-6">
           Tus Solicitudes
         </h2>
-        <CarouselRequest handler={handler} />
+        <CarouselRequest />
       </div>
       {showForm ? (
         <span className=" fixed top-0 right-0 flex justify-center items-center bg-modal w-screen h-screen">

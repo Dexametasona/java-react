@@ -38,10 +38,17 @@ const requestsSlice = createSlice({
     resetSuccessRequests: (state) => {
       state.isSuccessRequests = false;
     },
+    deleteRequest: (state, action) => {
+      state.isLoadingRequests = false;
+      state.requests = state.requests.filter(
+        (item) => item.id != action.payload
+      );
+      state.isSuccessRequests = true;
+    },
   },
 });
 
-export const { addRequest, fillRoles,requestsRequest, fillRequests, requestsFail, resetSuccessRequests } =
+export const { deleteRequest,addRequest, fillRoles,requestsRequest, fillRequests, requestsFail, resetSuccessRequests } =
   requestsSlice.actions;
 
 export default requestsSlice.reducer;
