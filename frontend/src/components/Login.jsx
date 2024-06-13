@@ -2,10 +2,9 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { loginFail, loginSucess, showLogin } from "../redux/userAuth/userAuthSlice";
+import { loginFail,showLogin } from "../redux/userAuth/userAuthSlice";
 import Charging from "./Charging";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
 import { actionLogin} from "../redux/userAuth/userAuthActions";
 
 const Login = () => {
@@ -26,10 +25,8 @@ const Login = () => {
       password: Yup.string().required("Debe digitar una contraseña"),
     }),
     onSubmit: async (values) => {
-      // console.log(values)
       // dispatch(loginSucess(values))
       dispatch(actionLogin(values))
-      // dispatch(actionLoginWithEmailAndPassword(values));
     },
   });
 

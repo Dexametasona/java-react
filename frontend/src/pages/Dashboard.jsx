@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { showLogin } from "../redux/userAuth/userAuthSlice";
 import CardsCarousel from "../components/CardsCarousel";
-import { actionGetProjects } from "../redux/projects/projectsActions";
+import { actionGetFilteredProjects, actionGetProjects } from "../redux/projects/projectsActions";
+import Charging from "../components/Charging";
 
 const Dashboard = () => {
   const [filterSelected, setFilterSelected] = useState("all");
@@ -15,12 +16,29 @@ const Dashboard = () => {
   const { user } = useSelector((store) => store.userAuth);
   const { projects } = useSelector((store) => store.projects);
   const [currentPage, setCurrentPage] = useState(0);
-  const totalPages = projects?.totalPages;
+  
   const pageSize = 9;
-
+  const totalPages = projects?.totalPages ??  Math.ceil((projects?.length || 0) / pageSize) ;
+  
   useEffect(() => {
-    dispatch(actionGetProjects(currentPage, pageSize));
-  }, [currentPage, dispatch]);
+    switch (filterSelected) {
+      case "all":
+        dispatch(actionGetProjects(currentPage, pageSize));
+        break;
+      case "front":
+        dispatch(actionGetFilteredProjects("FRONTEND"));
+        break;
+      case "back":
+        dispatch(actionGetFilteredProjects("BACKEND"));
+        break;
+      case "full":
+        dispatch(actionGetFilteredProjects("FULLSTACK_DEVELOPER"));
+        break;
+      default:
+        dispatch(actionGetProjects(currentPage, pageSize));
+        break;
+    }
+  }, [currentPage,filterSelected, dispatch]);
 
   const handleApply = (idProject) => {
     user
@@ -47,6 +65,7 @@ const Dashboard = () => {
       firstCardRef.current.focus();
     }
   }, [projects]);
+
 
   return (
     <section className="w-full">
@@ -118,7 +137,6 @@ const Dashboard = () => {
                 : "bg-transparent"
             }`}
           >
-            {" "}
             <p
               className={` ${
                 filterSelected != "full" ? "pr-4 border-r-2" : ""
@@ -130,7 +148,7 @@ const Dashboard = () => {
         </ul>
       </div>
       <div className="flex flex-wrap gap-3 my-8">
-        {projects.content?.length > 0
+        {projects.content?.length > 0 
           ? projects.content?.map((item, index) => (
               <div
                 ref={index === 0 ? firstCardRef : null}
@@ -184,8 +202,9 @@ const Dashboard = () => {
                 </h4>
               </div>
             ))
-          : null}
+          : <p className="text-secondary-color ms-2 mb-4 font-semibold">No hay proyectos disponibles</p> }
       </div>
+      {projects.content?.length > 0 ?
       <nav className="flex justify-center my-6">
         <ul className="flex flex-row items-center">
           <li>
@@ -251,7 +270,7 @@ const Dashboard = () => {
             </button>
           </li>
         </ul>
-      </nav>
+      </nav> : null}
       <div className="">
         <h2 className="w-full text-3xl font-bold font-title text-secondary-color  text-start border-s-4 border-highlight-color ps-2 my-6">
           Populares

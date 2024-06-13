@@ -3,7 +3,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import SelectableForm from "./prueba";
 import {
-  addProjects,
   projectsFail,
   resetSuccess,
   showFormProjects,
@@ -59,7 +58,6 @@ const FormCreateProject = () => {
       if (selectedOptions.length > 0) {
         setError(false);
         values.stacks = selectedOptions;
-        console.log(values);
         dispatch(actionCreateProject(values,isAuth))
         // dispatch(addProjects(values));
       } else {

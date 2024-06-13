@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialProjects = {
   projects: [],
   userProjects:[],
+  userRequests:[],
   popular:[],
   detailsProject:null,
   isSuccessProjects: false,
@@ -66,10 +67,16 @@ const projectsSlice = createSlice({
       state.isLoadingProjects = false;
       state.errorProjects = null;
     },  
+    fillUserRequest: (state, action) => {
+      state.userRequests = action.payload;
+      state.isLoadingProjects = false;
+      state.errorProjects = null;
+    },  
   },
 });
 
 export const {
+  fillUserRequest,
   detailsProject,
   fillUserProjects,
   fillPopular,
