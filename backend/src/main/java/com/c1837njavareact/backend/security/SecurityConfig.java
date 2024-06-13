@@ -32,7 +32,7 @@ public class SecurityConfig {
         var corsConfig = new CorsConfiguration();
         corsConfig.setAllowedOrigins(List.of("http://localhost:8080",
                 "http://localhost:5173",
-                "https://java-react.vercel.app/"));
+                "https://java-react.vercel.app"));
         corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
         corsConfig.setAllowedHeaders(List.of("*"));
         return corsConfig;
