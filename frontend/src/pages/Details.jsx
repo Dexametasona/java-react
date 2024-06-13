@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import banner from "../assets/imgDetails.svg";
 import imgCard from "../assets/imgCard.jpeg";
 import FormRequest from "../components/FormRequest";
-import CardsCarousel from "../components/CardsCarousel";
 import FormSearchRol from "../components/FormSearchRol";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,12 +16,10 @@ const Details = () => {
   const { idProject } = useParams();
   const dispatch = useDispatch();
 
-  const roles = [1, 2];
   const { isAuth, user } = useSelector((store) => store.userAuth);
   const { detailsProject } = useSelector((store) => store.projects);
   const [viewType, setViewType] = useState(null);
 
-  console.log(detailsProject);
   useEffect(() => {
     dispatch(actionDetailsProject(idProject, isAuth));
   }, [dispatch]);
@@ -53,6 +50,7 @@ const Details = () => {
     }
   }, [detailsProject]);
 
+  console.log("detailsProject", detailsProject)
   return detailsProject ? (
     <div className="mt-12">
       <div className="mt-4 flex flex-row">
@@ -99,7 +97,7 @@ const Details = () => {
         {viewType === "edition" ? (
           <FormSearchRol />
         ) : viewType === "request" ? (
-          <FormRequest />
+          <FormRequest roles={detailsProject.positions} idProject={idProject} request={detailsProject.joinRequests.some(request => request.user === user.email )         } />
         ) : (
           <div className="w-1/3 bg-secondary-color p-4 rounded-xl h-48">
             <h2 className="font-title text-highlight-color text-2xl text-center font-bold mb-4">
@@ -151,16 +149,15 @@ const Details = () => {
               );
             })
           ) : // aqui debo poner la informacion de las positions
-          roles?.length > 0 ? (
-            roles?.map((item) => (
-              <div key={item} className="w-1/3 bg-primary-color rounded-xl p-2">
+          detailsProject.positions?.length > 0 ? (
+            detailsProject.positions?.map((role) => (
+              <div key={`role${role.id}`} className="w-1/3 bg-primary-color rounded-xl p-2">
                 <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
                   <h2 className="font-body font-bold text-lg text-highlight-color mb-2">
-                    Frontend developer (2)
+                    {role.proyectoRole}({role.quantity})
                   </h2>
                   <p className="font-body text-sm">
-                    Consectetur adipisicing esse commodo mollit laboris culpa et
-                    officia quis dolore velit duis ut ullamco
+                    {role.description}
                   </p>
                 </div>
               </div>
@@ -172,25 +169,6 @@ const Details = () => {
                 : "No estamos buscando colaboradores en este momento"}
             </p>
           )}
-          {/* {roles?.length > 0 ? (
-            roles?.map((item) => (
-              <div key={item} className="w-1/3 bg-primary-color rounded-xl p-2">
-                <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
-                  <h2 className="font-body font-bold text-lg text-highlight-color mb-2">
-                    Frontend developer (2)
-                  </h2>
-                  <p className="font-body text-sm">
-                    Consectetur adipisicing esse commodo mollit laboris culpa et
-                    officia quis dolore velit duis ut ullamco
-                  </p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-secondary-color ms-2">
-              No tienes roles a buscar en este momento
-            </p>
-          )} */}
         </div>
       </div>
       {viewType === "edition" ? (
@@ -203,7 +181,7 @@ const Details = () => {
               
               colaborator.proyectoRole != "OWNER" && colaborator.userId != user.id ? (
                 <div
-                  key={colaborator.userId}
+                  key={`collaborator-${colaborator.userId}`}
                   className="w-1/3 bg-primary-color rounded-xl p-2"
                 >
                   <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">

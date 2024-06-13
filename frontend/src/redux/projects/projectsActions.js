@@ -1,5 +1,5 @@
 import endpoints from "../../services/endpoints";
-import { addProjects, detailsProject, fillPopular, fillProjects, fillUserProjects, projectsFail, projectsRequest } from "./projectSlice";
+import { addProjects, detailsProject, fillPopular, fillProjects, fillUserProjects, fillUserRequest, projectsFail, projectsRequest } from "./projectSlice";
 import axios from "axios";
 
 export const actionGetProjects = (page = 0, size = 9, sort = 'id', direction = 'asc') => {
@@ -21,6 +21,21 @@ export const actionGetProjects = (page = 0, size = 9, sort = 'id', direction = '
     }
   };
 };
+
+export const actionGetFilteredProjects = (filter) =>{
+  return async (dispatch) => {
+    dispatch(projectsRequest());
+    try {
+      const { data } = await axios.get(endpoints.getProjectFilter(filter));
+      dispatch(fillProjects({
+        content: data
+      }));
+    } catch (error) {
+      console.error(error);
+      dispatch(projectsFail());
+    }
+  };
+}
 
 export const actionCreateProject = (newProject,config) => {
   return async (dispatch) => {
@@ -74,6 +89,19 @@ export const actionDetailsProject = (idProject,config) => {
     try {
       const { data } = await axios.get(endpoints.getProjectsById(idProject),config);
       dispatch(detailsProject(data));
+    } catch (error) {
+      console.error(error);
+      dispatch(projectsFail());
+    }
+  };
+};
+
+export const actionGetRequestUser= (config) => {
+  return async (dispatch) => {
+    dispatch(projectsRequest());
+    try {
+      const { data } = await axios.get(endpoints.getRequestByUser,config);
+      dispatch(fillUserRequest(data));
     } catch (error) {
       console.error(error);
       dispatch(projectsFail());
