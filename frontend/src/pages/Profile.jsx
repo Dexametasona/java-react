@@ -66,7 +66,7 @@ const Profile = () => {
               <div className="w-2/5 bg-primary-color rounded-xl p-2">
                 <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
                   <div className="flex items-center justify-between">
-                    <button onClick={()=>navigate(`/details/${item.id}`)} className="font-body font-bold text-xl text-primary-color">
+                    <button onClick={()=>navigate(`/details/${item.id}`)} className="font-body font-bold text-xl text-primary-color text-start">
                       {item.name}
                     </button>
                     <div className="ms-2 flex">
