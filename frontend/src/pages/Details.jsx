@@ -5,9 +5,10 @@ import FormRequest from "../components/FormRequest";
 import FormSearchRol from "../components/FormSearchRol";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { actionDetailsProject, actionGetPositionProject } from "../redux/projects/projectsActions";
+import { actionDetailsProject } from "../redux/projects/projectsActions";
 import Charging from "../components/Charging";
 import { format } from "date-fns";
+import { fillPositions } from "../redux/projects/projectSlice";
 
 const Details = () => {
   //solicitud -> si el id del dueño del proyecto es diferente del userAuth y no hace parte de colaboradore
@@ -20,14 +21,11 @@ const Details = () => {
   const { detailsProject, positions } = useSelector((store) => store.projects);
   const [viewType, setViewType] = useState(null);
   const [hasOtherCollaborators, setHasOtherCollaborators] = useState(0);
-
+    
   useEffect(() => {
     dispatch(actionDetailsProject(idProject, isAuth));
   }, [dispatch,idProject]);
 
-  useEffect(() => {
-    dispatch(actionGetPositionProject(idProject,isAuth));
-  }, [dispatch,idProject]);
 
   useEffect(() => {
     if (detailsProject) {
@@ -164,7 +162,7 @@ const Details = () => {
               </p>
             )
           ) : positions?.length > 0 ? (
-            detailsProject.positions?.map((role) => (
+            positions?.map((role) => (
               <div
                 key={`role${role.id}`}
                 className="w-1/3 bg-primary-color rounded-xl p-2"

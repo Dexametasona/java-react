@@ -89,6 +89,7 @@ export const actionDetailsProject = (idProject,config) => {
     try {
       const { data } = await axios.get(endpoints.getProjectsById(idProject),config);
       dispatch(detailsProject(data));
+      dispatch(fillPositions(data.positions ?? [] ))
     } catch (error) {
       console.error(error);
       dispatch(projectsFail());
@@ -122,16 +123,4 @@ export const actionCreatePosition= (newPosition,config) => {
   };
 };
 
-export const actionGetPositionProject= (idProject,config) => {
-  return async (dispatch) => {
-    dispatch(projectsRequest());
-    try {
-      const { data } = await axios.get(endpoints.getRequestByProject(idProject),config);
-      dispatch(fillPositions(data));
-    } catch (error) {
-      console.error(error);
-      dispatch(projectsFail());
-    }
-  };
-};
 
