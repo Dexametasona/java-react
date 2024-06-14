@@ -1,5 +1,5 @@
 import axios from "axios"
-import { addRequest, deleteRequest, fillRequests, fillRoles, requestsFail, requestsRequest } from "./requestsSlice"
+import { addRequest, deleteRequest, fillIncommingRequests, fillRequests, fillRoles, processingRequest, requestsFail, requestsRequest } from "./requestsSlice"
 import endpoints from "../../services/endpoints"
 
 export const actionGetRoles = () => {
@@ -46,6 +46,45 @@ export const actionCancelRequest= (idRequest,config) => {
       try {
         const { data } = await axios.delete(endpoints.cancelRequest(idRequest),config);
         dispatch(deleteRequest(idRequest));
+      } catch (error) {
+        console.error(error);
+        dispatch(requestsFail());
+      }
+    };
+  };
+
+  export const actionFillIncommingRequests= (userId,config) => {
+    return async (dispatch) => {
+      dispatch(requestsRequest());
+      try {
+        const { data } = await axios.get(endpoints.getRequestFromUser(userId),config);
+        dispatch(fillIncommingRequests(data));
+      } catch (error) {
+        console.error(error);
+        dispatch(requestsFail());
+      }
+    };
+  };
+
+  export const actionAcceptRequests= (idRequest,config) => {
+    return async (dispatch) => {
+      dispatch(requestsRequest());
+      try {
+        const { data } = await axios.get(endpoints.acceptRequest(idRequest),config);
+        dispatch(processingRequest(idRequest));
+      } catch (error) {
+        console.error(error);
+        dispatch(requestsFail());
+      }
+    };
+  };
+
+  export const actionRejectRequests= (idRequest,config) => {
+    return async (dispatch) => {
+      dispatch(requestsRequest());
+      try {
+        const { data } = await axios.get(endpoints.rejectRequest(idRequest),config);
+        dispatch(processingRequest(idRequest));
       } catch (error) {
         console.error(error);
         dispatch(requestsFail());

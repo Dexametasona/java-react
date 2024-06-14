@@ -9,10 +9,11 @@ import {
 } from "../redux/projects/projectsActions";
 import CarouselRequest from "../components/CarouselRequest";
 import Swal from "sweetalert2";
-import { actionCancelRequest } from "../redux/request/requestsActions";
+import { actionAcceptRequests, actionCancelRequest, actionFillIncommingRequests, actionRejectRequests } from "../redux/request/requestsActions";
 import Charging from "../components/Charging";
 import {
   requestsFail,
+  resetManagedRequests,
   resetSuccessRequests,
 } from "../redux/request/requestsSlice";
 import { Link, useNavigate } from "react-router-dom";
@@ -20,22 +21,64 @@ import { Link, useNavigate } from "react-router-dom";
 const Profile = () => {
   const dispatch = useDispatch();
   const { userProjects, showForm } = useSelector((store) => store.projects);
+  const { incommingRequest,ismanagedRequests } = useSelector((store) => store.requests);
   const { user, isAuth } = useSelector((store) => store.userAuth);
+  const [change,setChange] =useState(null)
 
   const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(actionGetUserProject(user.email, isAuth));
-  }, [dispatch]);
+  }, [dispatch,isAuth,change]);
 
-  // useEffect(() => {
-  //   dispatch(actionGetRequestUser(isAuth));
-  // }, [dispatch]);
-
+  useEffect(() => {
+    dispatch(actionFillIncommingRequests(user.id, isAuth));
+  }, [dispatch,isAuth]);
 
   const handlerDeleteProject = () => {
     console.log("click borrar proyecto");
   };
+  const handlerAcceptRequest= (id) => {
+    console.log("aceptar",id)
+    setChange("accept")
+    dispatch(actionAcceptRequests(id,isAuth))
+  };
+  const handlerRejectRequest= (id) => {
+    console.log("rechazar",id)
+    setChange("reject")
+    dispatch(actionRejectRequests(id,isAuth))
+  };
+
+  if(ismanagedRequests){
+    if(change == "accept"){
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Solicitud aceptada",
+        showConfirmButton: false,
+        heightAuto:false,
+        timer: 1500
+      });
+    }
+    else{
+      if(change == "reject"){
+        Swal.fire({
+          position: "top-end",
+          icon: "error",
+          text: "Solicitud Rechazada",
+          showConfirmButton: false,
+          width:300,
+          timer: 1500,
+          customClass: {
+            popup: 'flex flex-row',
+            icon: 'text-xs' 
+          }
+          
+        });
+      }
+    }
+    dispatch(resetManagedRequests())
+  }
 
   return (
     <div className="mt-12">
@@ -149,7 +192,7 @@ const Profile = () => {
                               </p>
                               <div className="flex gap-3 ms-2 mb-2">
                                 <button
-                                  onClick={() => console.log("aceptar")}
+                                  onClick={() => handlerAcceptRequest(request.id)}
                                   className="bg-highlight-color w-8 h-8 p-1 rounded-full fill-secondary-color"
                                 >
                                   <svg
@@ -160,7 +203,7 @@ const Profile = () => {
                                   </svg>
                                 </button>
                                 <button
-                                  onClick={() => console.log("rechazar")}
+                                  onClick={() => handlerRejectRequest(request.id)}
                                   className="bg-highlight-color w-8 h-8 p-1 rounded-full fill-secondary-color"
                                 >
                                   <svg

@@ -2,8 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialRequests = {
   requests: [],
+  incommingRequest:[],
   roles:[],
   isSuccessRequests: false,
+  ismanagedRequests: false,
   isLoadingRequests: false,
   errorRequests: null,
 };
@@ -18,6 +20,11 @@ const requestsSlice = createSlice({
     },
     fillRequests: (state, action) => {
       state.requests = action.payload;
+      state.isLoadingRequests = false;
+      state.errorRequests = null;
+    },
+    fillIncommingRequests: (state, action) => {
+      state.incommingRequest = action.payload;
       state.isLoadingRequests = false;
       state.errorRequests = null;
     },
@@ -38,6 +45,9 @@ const requestsSlice = createSlice({
     resetSuccessRequests: (state) => {
       state.isSuccessRequests = false;
     },
+    resetManagedRequests: (state) => {
+      state.ismanagedRequests = false;
+    },
     deleteRequest: (state, action) => {
       state.isLoadingRequests = false;
       state.requests = state.requests.filter(
@@ -45,10 +55,17 @@ const requestsSlice = createSlice({
       );
       state.isSuccessRequests = true;
     },
+    processingRequest: (state, action) => {
+      state.isLoadingRequests = false;
+      state.incommingRequest = state.incommingRequest.filter(
+        (item) => item.id != action.payload
+      );
+      state.ismanagedRequests=true;
+    },
   },
 });
 
-export const { deleteRequest,addRequest, fillRoles,requestsRequest, fillRequests, requestsFail, resetSuccessRequests } =
+export const { resetManagedRequests,processingRequest,fillIncommingRequests,deleteRequest,addRequest, fillRoles,requestsRequest, fillRequests, requestsFail, resetSuccessRequests } =
   requestsSlice.actions;
 
 export default requestsSlice.reducer;

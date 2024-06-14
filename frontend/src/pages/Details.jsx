@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { actionDetailsProject } from "../redux/projects/projectsActions";
 import Charging from "../components/Charging";
 import { format } from "date-fns";
-import { fillPositions } from "../redux/projects/projectSlice";
 
 const Details = () => {
   //solicitud -> si el id del dueño del proyecto es diferente del userAuth y no hace parte de colaboradore

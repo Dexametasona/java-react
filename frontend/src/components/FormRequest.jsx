@@ -32,10 +32,11 @@ const FormRequest = ({ roles = [], idProject, request = false }) => {
         .min(10, "Debe contener al menos 10 caracteres")
         .max(255, "Excedio el numero maximo de caracteres"),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async (values,{resetForm}) => {
       if (idProject) {
         values.proyectoTarget = parseInt(idProject);
         dispatch(actionCreateRequest(values,isAuth))
+        resetForm()
       }
     },
   });
