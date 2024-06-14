@@ -1,5 +1,5 @@
 import axios from "axios"
-import { addRequest, deleteRequest, fillIncommingRequests, fillRequests, fillRoles, processingRequest, requestsFail, requestsRequest } from "./requestsSlice"
+import { addRequest, chargingRequest, deleteRequest, fillIncommingRequests, fillRequests, fillRoles, processingRequest, requestsFail, requestsRequest } from "./requestsSlice"
 import endpoints from "../../services/endpoints"
 
 export const actionGetRoles = () => {
@@ -7,7 +7,7 @@ export const actionGetRoles = () => {
         dispatch(requestsRequest())
         try {
             const {data} = await axios.get(endpoints.getRoles)
-            dispatch(fillRoles(data))
+            dispatch(fillRoles(data.filter(role => role.role !== "OWNER")))
         } catch (error) {
             console.error(error);
             dispatch(requestsFail(error.message))
@@ -68,7 +68,7 @@ export const actionCancelRequest= (idRequest,config) => {
 
   export const actionAcceptRequests= (idRequest,config) => {
     return async (dispatch) => {
-      dispatch(requestsRequest());
+      dispatch(chargingRequest());
       try {
         const { data } = await axios.get(endpoints.acceptRequest(idRequest),config);
         dispatch(processingRequest(idRequest));
@@ -81,7 +81,7 @@ export const actionCancelRequest= (idRequest,config) => {
 
   export const actionRejectRequests= (idRequest,config) => {
     return async (dispatch) => {
-      dispatch(requestsRequest());
+      dispatch(chargingRequest());
       try {
         const { data } = await axios.get(endpoints.rejectRequest(idRequest),config);
         dispatch(processingRequest(idRequest));

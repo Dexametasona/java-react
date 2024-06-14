@@ -9,7 +9,12 @@ import {
 } from "../redux/projects/projectsActions";
 import CarouselRequest from "../components/CarouselRequest";
 import Swal from "sweetalert2";
-import { actionAcceptRequests, actionCancelRequest, actionFillIncommingRequests, actionRejectRequests } from "../redux/request/requestsActions";
+import {
+  actionAcceptRequests,
+  actionCancelRequest,
+  actionFillIncommingRequests,
+  actionRejectRequests,
+} from "../redux/request/requestsActions";
 import Charging from "../components/Charging";
 import {
   requestsFail,
@@ -21,63 +26,63 @@ import { Link, useNavigate } from "react-router-dom";
 const Profile = () => {
   const dispatch = useDispatch();
   const { userProjects, showForm } = useSelector((store) => store.projects);
-  const { incommingRequest,ismanagedRequests } = useSelector((store) => store.requests);
+  const { incommingRequest, ismanagedRequests, charging } = useSelector(
+    (store) => store.requests
+  );
   const { user, isAuth } = useSelector((store) => store.userAuth);
-  const [change,setChange] =useState(null)
+  const [change, setChange] = useState(null);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(actionGetUserProject(user.email, isAuth));
-  }, [dispatch,isAuth,change]);
+  }, [dispatch, isAuth, change, user, charging]);
 
   useEffect(() => {
     dispatch(actionFillIncommingRequests(user.id, isAuth));
-  }, [dispatch,isAuth]);
+  }, [dispatch, isAuth]);
 
   const handlerDeleteProject = () => {
     console.log("click borrar proyecto");
   };
-  const handlerAcceptRequest= (id) => {
-    console.log("aceptar",id)
-    setChange("accept")
-    dispatch(actionAcceptRequests(id,isAuth))
+  const handlerAcceptRequest = (id) => {
+    // console.log("aceptar",id)
+    setChange("accept");
+    dispatch(actionAcceptRequests(id, isAuth));
   };
-  const handlerRejectRequest= (id) => {
-    console.log("rechazar",id)
-    setChange("reject")
-    dispatch(actionRejectRequests(id,isAuth))
+  const handlerRejectRequest = (id) => {
+    // console.log("rechazar",id)
+    setChange("reject");
+    dispatch(actionRejectRequests(id, isAuth));
   };
 
-  if(ismanagedRequests){
-    if(change == "accept"){
+  if (ismanagedRequests) {
+    if (change == "accept") {
       Swal.fire({
         position: "top-end",
         icon: "success",
         title: "Solicitud aceptada",
         showConfirmButton: false,
-        heightAuto:false,
-        timer: 1500
+        heightAuto: false,
+        timer: 1500,
       });
-    }
-    else{
-      if(change == "reject"){
+    } else {
+      if (change == "reject") {
         Swal.fire({
           position: "top-end",
           icon: "error",
           text: "Solicitud Rechazada",
           showConfirmButton: false,
-          width:300,
+          width: 300,
           timer: 1500,
           customClass: {
-            popup: 'flex flex-row',
-            icon: 'text-xs' 
-          }
-          
+            popup: "flex flex-row",
+            icon: "text-xs",
+          },
         });
       }
     }
-    dispatch(resetManagedRequests())
+    dispatch(resetManagedRequests());
   }
 
   return (
@@ -109,7 +114,10 @@ const Profile = () => {
               <div className="w-2/5 bg-primary-color rounded-xl p-2">
                 <div className="w-full bg-secondary-color py-4 px-6 rounded-xl">
                   <div className="flex items-center justify-between">
-                    <button onClick={()=>navigate(`/details/${item.id}`)} className="font-body font-bold text-xl text-primary-color text-start">
+                    <button
+                      onClick={() => navigate(`/details/${item.id}`)}
+                      className="font-body font-bold text-xl text-primary-color text-start"
+                    >
                       {item.name}
                     </button>
                     <div className="ms-2 flex">
@@ -171,66 +179,74 @@ const Profile = () => {
                   <h2 className="font-body font-bold text-xl text-primary-color">
                     Solicitudes
                   </h2>
-                  <div
-                    className={`w-full flex justify-between mb-2 pb-1 ${
-                      item.joinRequests?.length > 0 ? "h-36" : "h-10"
-                    } overflow-y-auto `}
-                  >
-                    <div className="w-full flex flex-col gap-2 my-1">
-                      {item.joinRequests?.length > 0 ? (
-                        item.joinRequests?.map((request) => (
-                          <div
-                            key={`request-${request.id}`}
-                            className="w-[95%] flex items-center shadow-lg p-2 m-1 rounded-xl mb-4"
-                          >
-                            <div className="w-2/5 ">
-                              <h4 className="font-title font-bold">
-                                {request.proyectoRole}
-                              </h4>
-                              <p className="font-title text-gray-card my-2 text-base">
-                                {request.user}
-                              </p>
-                              <div className="flex gap-3 ms-2 mb-2">
-                                <button
-                                  onClick={() => handlerAcceptRequest(request.id)}
-                                  className="bg-highlight-color w-8 h-8 p-1 rounded-full fill-secondary-color"
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
+                  {ismanagedRequests ? (
+                    <Charging />
+                  ) : (
+                    <div
+                      className={`w-full flex justify-between mb-2 pb-1 ${
+                        item.joinRequests?.length > 0 ? "h-36" : "h-10"
+                      } overflow-y-auto `}
+                    >
+                      <div className="w-full flex flex-col gap-2 my-1">
+                        {item.joinRequests?.length > 0 ? (
+                          item.joinRequests?.map((request) => (
+                            <div
+                              key={`request-${request.id}`}
+                              className="w-[95%] flex items-center shadow-lg p-2 m-1 rounded-xl mb-4"
+                            >
+                              <div className="w-2/5 ">
+                                <h4 className="font-title font-bold">
+                                  {request.proyectoRole}
+                                </h4>
+                                <p className="font-title text-gray-card my-2 text-base">
+                                  {request.user}
+                                </p>
+                                <div className="flex gap-3 ms-2 mb-2">
+                                  <button
+                                    onClick={() =>
+                                      handlerAcceptRequest(request.id)
+                                    }
+                                    className="bg-highlight-color w-8 h-8 p-1 rounded-full fill-secondary-color hover:fill-highlight-color hover:bg-secondary-color hover:border border-highlight-color"
                                   >
-                                    <path d="m10 15.586-3.293-3.293-1.414 1.414L10 18.414l9.707-9.707-1.414-1.414z"></path>
-                                  </svg>
-                                </button>
-                                <button
-                                  onClick={() => handlerRejectRequest(request.id)}
-                                  className="bg-highlight-color w-8 h-8 p-1 rounded-full fill-secondary-color"
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path d="m10 15.586-3.293-3.293-1.414 1.414L10 18.414l9.707-9.707-1.414-1.414z"></path>
+                                    </svg>
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handlerRejectRequest(request.id)
+                                    }
+                                    className="bg-highlight-color w-8 h-8 p-1 rounded-full fill-secondary-color hover:fill-highlight-color hover:bg-secondary-color hover:border border-highlight-color"
                                   >
-                                    <path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path>
-                                  </svg>
-                                </button>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="24"
+                                      height="24"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path>
+                                    </svg>
+                                  </button>
+                                </div>
+                              </div>
+                              <div className="w-3/5 ps-2">
+                                <p className="font-body text-sm text-truncate">
+                                  {request.message}
+                                </p>
                               </div>
                             </div>
-                            <div className="w-3/5 ps-2">
-                              <p className="font-body text-sm text-truncate">
-                                {request.message}
-                              </p>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-primary-color mt-3 ms-2">
-                          No tienes solicitudes en este momento
-                        </p>
-                      )}
+                          ))
+                        ) : (
+                          <p className="text-primary-color mt-3 ms-2">
+                            No tienes solicitudes en este momento
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>

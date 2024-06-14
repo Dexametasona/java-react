@@ -31,7 +31,7 @@ const projectsSlice = createSlice({
       state.errorProjects = action.payload;
     },
     addProjects: (state, action) => {
-      state.projects.push(action.payload);
+      state.projects.content.push(action.payload);
       state.isLoadingProjects = false;
       state.isSuccessProjects = true;
     },

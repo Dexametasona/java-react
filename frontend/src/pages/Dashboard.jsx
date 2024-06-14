@@ -30,8 +30,8 @@ const Dashboard = () => {
       case "back":
         dispatch(actionGetFilteredProjects("BACKEND"));
         break;
-      case "full":
-        dispatch(actionGetFilteredProjects("FULLSTACK_DEVELOPER"));
+      case "devops":
+        dispatch(actionGetFilteredProjects("DEVOPS"));
         break;
       default:
         dispatch(actionGetProjects(currentPage, pageSize));
@@ -129,19 +129,19 @@ const Dashboard = () => {
             </p>
           </button>
           <button
-            onClick={() => setFilterSelected("full")}
+            onClick={() => setFilterSelected("devops")}
             className={`px-8 py-2 mx-4 text-secondary-color font-semibold font-body text-base md:text-base  ${
-              filterSelected == "full"
+              filterSelected == "devops"
                 ? "bg-highlight-color rounded-full"
                 : "bg-transparent"
             }`}
           >
             <p
               className={` ${
-                filterSelected != "full" ? "pr-4 border-r-2" : ""
+                filterSelected != "devops" ? "pr-4 " : ""
               }`}
             >
-              Fullstack
+              DevOps
             </p>
           </button>
         </ul>

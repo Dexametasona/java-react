@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,14 +11,27 @@ import Charging from "./Charging";
 import Swal from "sweetalert2";
 import { actionCreateRequest } from "../redux/request/requestsActions";
 
-const FormRequest = ({ roles = [], idProject, request = false }) => {
+const FormRequest = ({ idProject}) => {
+  const [request, setRequest] = useState(false);
+  const [roles, setRoles] = useState([]);
+
+  const { detailsProject} = useSelector((store) => store.projects);
+  const {user} = useSelector((store) => store.userAuth);
+
+  useEffect(() => {
+    if (detailsProject) {
+      setRequest(
+        detailsProject.joinRequests.some((request) => request.user === user.email)
+      );
+      setRoles(detailsProject.positions);
+    }
+  }, [detailsProject]);
+
   const dispatch = useDispatch();
   const { isSuccessRequests, isLoadingRequests, errorRequests } = useSelector(
     (store) => store.requests
   );
-  const { isAuth } = useSelector(
-    (store) => store.userAuth
-  );
+  const { isAuth } = useSelector((store) => store.userAuth);
 
   const formik = useFormik({
     initialValues: {
@@ -32,11 +45,12 @@ const FormRequest = ({ roles = [], idProject, request = false }) => {
         .min(10, "Debe contener al menos 10 caracteres")
         .max(255, "Excedio el numero maximo de caracteres"),
     }),
-    onSubmit: async (values,{resetForm}) => {
+    onSubmit: async (values, { resetForm }) => {
       if (idProject) {
         values.proyectoTarget = parseInt(idProject);
-        dispatch(actionCreateRequest(values,isAuth))
-        resetForm()
+        dispatch(actionCreateRequest(values, isAuth));
+        resetForm();
+        setRequest(true);
       }
     },
   });
@@ -76,7 +90,7 @@ const FormRequest = ({ roles = [], idProject, request = false }) => {
       </h2>
     </div>
   ) : roles.length > 0 ? (
-    <div className="w-1/3 bg-secondary-color p-4 rounded-xl">
+    <div className="w-1/3 bg-secondary-color p-4 rounded-xl h-80">
       <h2 className="font-title text-highlight-color text-2xl text-start font-bold mb-4">
         Crear una solicitud
       </h2>

@@ -4,6 +4,7 @@ const initialRequests = {
   requests: [],
   incommingRequest:[],
   roles:[],
+  charging:false,
   isSuccessRequests: false,
   ismanagedRequests: false,
   isLoadingRequests: false,
@@ -56,16 +57,19 @@ const requestsSlice = createSlice({
       state.isSuccessRequests = true;
     },
     processingRequest: (state, action) => {
-      state.isLoadingRequests = false;
+      state.charging = false;
       state.incommingRequest = state.incommingRequest.filter(
         (item) => item.id != action.payload
       );
       state.ismanagedRequests=true;
     },
+    chargingRequest: (state) =>{
+      state.charging = false;
+    }
   },
 });
 
-export const { resetManagedRequests,processingRequest,fillIncommingRequests,deleteRequest,addRequest, fillRoles,requestsRequest, fillRequests, requestsFail, resetSuccessRequests } =
+export const { chargingRequest, resetManagedRequests,processingRequest,fillIncommingRequests,deleteRequest,addRequest, fillRoles,requestsRequest, fillRequests, requestsFail, resetSuccessRequests } =
   requestsSlice.actions;
 
 export default requestsSlice.reducer;

@@ -20,11 +20,10 @@ const Details = () => {
   const { detailsProject, positions } = useSelector((store) => store.projects);
   const [viewType, setViewType] = useState(null);
   const [hasOtherCollaborators, setHasOtherCollaborators] = useState(0);
-    
+
   useEffect(() => {
     dispatch(actionDetailsProject(idProject, isAuth));
-  }, [dispatch,idProject]);
-
+  }, [dispatch, idProject]);
 
   useEffect(() => {
     if (detailsProject) {
@@ -65,15 +64,31 @@ const Details = () => {
           <h2 className="w-full text-3xl font-bold font-title text-secondary-color  text-start border-s-4 border-highlight-color ps-2 my-2">
             {detailsProject.name}
           </h2>
-          <p className="ms-3 font-title text-gray-card mb-2 text-base">
-            Creado: {format(new Date(detailsProject.createdAt), "dd/MM/yyyy")}
-          </p>
+
+          {viewType == "edition" ? (
+            <p className="ms-3 font-title text-gray-card mb-2 text-base">
+              Creado: {format(new Date(detailsProject.createdAt), "dd/MM/yyyy")}
+            </p>
+          ) : (
+            <p className="ms-3 font-title text-gray-card mb-2 text-base">
+              Creador:{" "}
+              {
+                detailsProject.collaborators.find(
+                  (item) => item.proyectoRole == "OWNER"
+                ).userName
+              }
+            </p>
+          )}
         </div>
         <img className="w-24 object-cover" src={banner} alt="banner" />
       </div>
       <div className="flex justify-between mt-10">
         <div className="w-3/5 bg-secondary-color p-4 rounded-xl">
-          <img className="w-full h-32 mb-2 object-cover" src={imgCard} alt="card" />
+          <img
+            className="w-full h-32 mb-2 object-cover"
+            src={imgCard}
+            alt="card"
+          />
           <h2 className="font-title text-primary-color text-2xl text-start font-bold mb-4">
             Descripción
           </h2>
@@ -101,13 +116,7 @@ const Details = () => {
         {viewType === "edition" ? (
           <FormSearchRol idProject={idProject} />
         ) : viewType === "request" ? (
-          <FormRequest
-            roles={detailsProject.positions}
-            idProject={idProject}
-            request={detailsProject.joinRequests.some(
-              (request) => request.user === user.email
-            )}
-          />
+          <FormRequest project={detailsProject} idProject={idProject} />
         ) : (
           <div className="w-1/3 bg-secondary-color p-4 rounded-xl h-48">
             <h2 className="font-title text-highlight-color text-2xl text-center font-bold mb-4">
