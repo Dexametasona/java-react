@@ -46,11 +46,13 @@ Loop es la plataforma ideal para aquellos que buscan crecer profesionalmente y p
 
 - **Front End**
 
-<img src="https://user-images.githubusercontent.com/25181517/202896760-337261ed-ee92-4979-84c4-d4b829c7355d.png" title="Tailwind"  height=60 >
+<img src="https://user-images.githubusercontent.com/25181517/202896760-337261ed-ee92-4979-84c4-d4b829c7355d.png" title="Tailwind"  height=60 ><img src="https://github.com/Dexametasona/java-react/assets/117115178/12e1f9e6-f573-4256-80d6-a863fb0fdd9f" title="React"  height=60 ><img src="https://github.com/Dexametasona/java-react/assets/117115178/ac4253cf-14fe-4391-a3a2-d266b1cba6a8" title="Vercel"  height=60 ><img src="https://github.com/Dexametasona/java-react/assets/117115178/ac28f65d-e0f3-47fe-8f7d-e336786c786f" title="Vercel"  height=60 >
+
 
 - **Organización y comunicación**
 
 <img src="https://user-images.githubusercontent.com/25181517/192108374-8da61ba1-99ec-41d7-80b8-fb2f7c0a4948.png" title="GitHub"  height=60/> <img src="https://i.pinimg.com/736x/d6/11/54/d61154b2cae2e1c123477eaecbdbd487.jpg" title="Discord"  height=60/> 
+
 
 ## 🚀 **Equipo**
 
