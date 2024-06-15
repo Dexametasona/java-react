@@ -30,7 +30,7 @@ Loop es la plataforma ideal para aquellos que buscan crecer profesionalmente y p
 ## **Links del proyecto**
 
 
-+  ♻️ [GreenPoint - Sitio Web](https://site-ecoapp.netlify.app/home)
++  💻 [Loop-Sitio web](https://java-react.vercel.app/)
 
 +  🖌 [Diseño en Visily](https://app.visily.ai/projects/3846973f-787c-42ed-86b6-cc481a9b83b9/boards/964313)
 
